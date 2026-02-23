@@ -1,0 +1,62 @@
+{
+  "experiment": "Ex1 v2 Re-evaluation Summary",
+  "timestamp": "2026-02-11T18:27:20.034011",
+  "model_summary": {
+    "Gemini 2.5 Flash": {
+      "greedy_1to1": {
+        "avg_recall": 0.8141,
+        "avg_precision": 0.7623,
+        "avg_f1": 0.777,
+        "avg_sequence_match": 0.6539
+      },
+      "coverage_nm": {
+        "avg_recall": 0.9147,
+        "avg_precision": 0.9314,
+        "avg_f1": 0.9209,
+        "avg_sequence_match": 0.6557
+      }
+    },
+    "GPT-5 Mini": {
+      "greedy_1to1": {
+        "avg_recall": 0.8246,
+        "avg_precision": 0.6394,
+        "avg_f1": 0.7108,
+        "avg_sequence_match": 0.7434
+      },
+      "coverage_nm": {
+        "avg_recall": 0.9222,
+        "avg_precision": 0.8334,
+        "avg_f1": 0.8708,
+        "avg_sequence_match": 0.6884
+      }
+    },
+    "Gemini 2.5 Pro": {
+      "greedy_1to1": {
+        "avg_recall": 0.7909,
+        "avg_precision": 0.6983,
+        "avg_f1": 0.7361,
+        "avg_sequence_match": 0.8161
+      },
+      "coverage_nm": {
+        "avg_recall": 0.8756,
+        "avg_precision": 0.8842,
+        "avg_f1": 0.8739,
+        "avg_sequence_match": 0.8031
+      }
+    },
+    "GPT-5.2": {
+      "greedy_1to1": {
+        "avg_recall": 0.5371,
+        "avg_precision": 0.3714,
+        "avg_f1": 0.4361,
+        "avg_sequence_match": 0.8526
+      },
+      "coverage_nm": {
+        "avg_recall": 0.6409,
+        "avg_precision": 0.4932,
+        "avg_f1": 0.5494,
+        "avg_sequence_match": 0.7849
+      }
+    }
+  }
+}

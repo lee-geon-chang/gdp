@@ -1,0 +1,192 @@
+{
+  "tool_id": "energy_estimator",
+  "tool_name": "Energy Estimator",
+  "description": "Estimate energy consumption and cost per process based on equipment type and cycle time. Calculates per-unit and total energy consumption, with cost estimates and aggregation by equipment type.",
+  "execution_type": "python",
+  "file_name": "energy_estimator.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "processes",
+        "type": "array",
+        "required": true,
+        "description": "List of processes with cycle time and parallel count",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "required": true, "description": "Unique process identifier"},
+            {"name": "name", "type": "string", "required": true, "description": "Process display name"},
+            {"name": "cycle_time_sec", "type": "number", "required": true, "description": "Cycle time in seconds per unit"},
+            {"name": "parallel_count", "type": "integer", "required": true, "description": "Number of parallel stations"}
+          ]
+        }
+      },
+      {
+        "name": "equipment_assignments",
+        "type": "array",
+        "required": true,
+        "description": "Equipment assigned to each process",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "required": true, "description": "Process this equipment is assigned to"},
+            {"name": "equipment_id", "type": "string", "required": true, "description": "Unique equipment identifier"},
+            {"name": "equipment_name", "type": "string", "required": true, "description": "Equipment display name"},
+            {"name": "equipment_type", "type": "string", "required": true, "description": "Equipment type (robot, machine, conveyor, manual_station, agv, oven, press)"}
+          ]
+        }
+      },
+      {
+        "name": "energy_rates",
+        "type": "object",
+        "required": false,
+        "description": "Power consumption (kW) by equipment type. Defaults are provided for common types.",
+        "default": {"robot": 5.0, "machine": 8.0, "conveyor": 2.0, "manual_station": 0.5, "agv": 1.5}
+      },
+      {
+        "name": "production_volume",
+        "type": "integer",
+        "required": false,
+        "description": "Total number of units to produce (default 1000)",
+        "default": 1000
+      },
+      {
+        "name": "cost_per_kwh",
+        "type": "number",
+        "required": false,
+        "description": "Electricity cost per kWh in currency units (default 0.12)",
+        "default": 0.12
+      }
+    ],
+    "description": "Processes with cycle times, equipment assignments with types, energy rates, and production parameters"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "process_energy",
+        "type": "array",
+        "description": "Per-process energy consumption breakdown",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process identifier"},
+            {"name": "name", "type": "string", "description": "Process name"},
+            {"name": "equipment_type", "type": "string", "description": "Equipment type(s) used"},
+            {"name": "power_kw", "type": "number", "description": "Total power draw in kW"},
+            {"name": "cycle_time_sec", "type": "number", "description": "Cycle time in seconds"},
+            {"name": "parallel_count", "type": "integer", "description": "Number of parallel stations"},
+            {"name": "energy_per_unit_kwh", "type": "number", "description": "Energy consumed per unit (kWh)"},
+            {"name": "energy_total_kwh", "type": "number", "description": "Total energy for production volume (kWh)"},
+            {"name": "cost_estimate", "type": "number", "description": "Estimated cost for total energy"}
+          ]
+        }
+      },
+      {"name": "total_energy_kwh", "type": "number", "description": "Sum of all process energy consumption (kWh)"},
+      {"name": "total_cost", "type": "number", "description": "Total estimated energy cost"},
+      {"name": "energy_by_type", "type": "object", "description": "Energy consumption aggregated by equipment type (kWh)"},
+      {"name": "production_volume", "type": "integer", "description": "Production volume used in calculation"},
+      {"name": "cost_per_kwh", "type": "number", "description": "Cost rate used in calculation"}
+    ],
+    "description": "Energy consumption estimates per process, totals, and aggregation by equipment type"
+  },
+  "params_schema": [
+    {
+      "name": "energy_rates",
+      "type": "object",
+      "required": false,
+      "description": "Power consumption (kW) by equipment type. Override defaults with custom values."
+    },
+    {
+      "name": "production_volume",
+      "type": "integer",
+      "default": 1000,
+      "description": "Total production volume for energy calculation"
+    },
+    {
+      "name": "cost_per_kwh",
+      "type": "number",
+      "default": 0.12,
+      "description": "Electricity cost per kWh"
+    }
+  ],
+  "example_input": {
+    "processes": [
+      {"process_id": "P1", "name": "Frame Assembly", "cycle_time_sec": 45.0, "parallel_count": 1},
+      {"process_id": "P2", "name": "Welding", "cycle_time_sec": 120.0, "parallel_count": 2},
+      {"process_id": "P3", "name": "Painting", "cycle_time_sec": 90.0, "parallel_count": 2},
+      {"process_id": "P4", "name": "Quality Check", "cycle_time_sec": 30.0, "parallel_count": 1}
+    ],
+    "equipment_assignments": [
+      {"process_id": "P1", "equipment_id": "EQ001", "equipment_name": "Manual Workbench", "equipment_type": "manual_station"},
+      {"process_id": "P2", "equipment_id": "EQ002", "equipment_name": "Welding Robot", "equipment_type": "robot"},
+      {"process_id": "P3", "equipment_id": "EQ003", "equipment_name": "Paint Sprayer", "equipment_type": "machine"},
+      {"process_id": "P4", "equipment_id": "EQ004", "equipment_name": "Inspection Station", "equipment_type": "manual_station"}
+    ],
+    "energy_rates": {
+      "robot": 5.0,
+      "machine": 8.0,
+      "manual_station": 0.5
+    },
+    "production_volume": 1000,
+    "cost_per_kwh": 0.12
+  },
+  "example_output": {
+    "process_energy": [
+      {
+        "process_id": "P1",
+        "name": "Frame Assembly",
+        "equipment_type": "manual_station",
+        "power_kw": 0.5,
+        "cycle_time_sec": 45.0,
+        "parallel_count": 1,
+        "energy_per_unit_kwh": 0.0063,
+        "energy_total_kwh": 6.25,
+        "cost_estimate": 0.75
+      },
+      {
+        "process_id": "P2",
+        "name": "Welding",
+        "equipment_type": "robot",
+        "power_kw": 5.0,
+        "cycle_time_sec": 120.0,
+        "parallel_count": 2,
+        "energy_per_unit_kwh": 0.1667,
+        "energy_total_kwh": 83.3333,
+        "cost_estimate": 10.0
+      },
+      {
+        "process_id": "P3",
+        "name": "Painting",
+        "equipment_type": "machine",
+        "power_kw": 8.0,
+        "cycle_time_sec": 90.0,
+        "parallel_count": 2,
+        "energy_per_unit_kwh": 0.2,
+        "energy_total_kwh": 100.0,
+        "cost_estimate": 12.0
+      },
+      {
+        "process_id": "P4",
+        "name": "Quality Check",
+        "equipment_type": "manual_station",
+        "power_kw": 0.5,
+        "cycle_time_sec": 30.0,
+        "parallel_count": 1,
+        "energy_per_unit_kwh": 0.0042,
+        "energy_total_kwh": 4.1667,
+        "cost_estimate": 0.5
+      }
+    ],
+    "total_energy_kwh": 193.75,
+    "total_cost": 23.25,
+    "energy_by_type": {
+      "manual_station": 10.4167,
+      "robot": 83.3333,
+      "machine": 100.0
+    },
+    "production_volume": 1000,
+    "cost_per_kwh": 0.12
+  }
+}

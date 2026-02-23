@@ -1,0 +1,115 @@
+{
+  "tool_id": "worker_skill_matcher",
+  "tool_name": "Worker Skill Matcher",
+  "description": "Evaluates the quality of worker-to-process assignments by comparing worker skill levels against process complexity. Identifies mismatches and provides reassignment recommendations.",
+  "execution_type": "python",
+  "file_name": "worker_skill_matcher.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "workers",
+        "type": "array",
+        "required": true,
+        "description": "Array of worker objects with skill levels",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "worker_id", "type": "string", "description": "Unique worker identifier"},
+            {"name": "name", "type": "string", "description": "Worker display name"},
+            {"name": "skill_level", "type": "string", "description": "Skill level: Senior, Mid, or Junior"}
+          ]
+        }
+      },
+      {
+        "name": "assignments",
+        "type": "array",
+        "required": true,
+        "description": "Array of worker-to-process assignments",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process identifier"},
+            {"name": "parallel_index", "type": "integer", "description": "Parallel station index"},
+            {"name": "resource_id", "type": "string", "description": "Worker ID (matches workers array)"},
+            {"name": "role", "type": "string", "description": "Worker role (operator, inspector, etc.)"}
+          ]
+        }
+      },
+      {
+        "name": "process_complexity",
+        "type": "array",
+        "required": true,
+        "description": "Array of process complexity information. complexity_level can be provided explicitly or derived from cycle_time_sec (>120s=High, >60s=Medium, else Low).",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process identifier"},
+            {"name": "name", "type": "string", "description": "Process display name"},
+            {"name": "cycle_time_sec", "type": "number", "description": "Cycle time in seconds (used to derive complexity if not explicit)"},
+            {"name": "complexity_level", "type": "string", "description": "Explicit complexity: High, Medium, or Low (optional, derived from cycle_time if absent)"}
+          ]
+        }
+      }
+    ],
+    "description": "Workers with skill levels, process assignments, and process complexity information"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {"name": "matches", "type": "array", "description": "All evaluated worker-process matches with scores and recommendations, sorted by score ascending"},
+      {"name": "overall_match_score", "type": "number", "description": "Average match score across all assignments (0-100)"},
+      {"name": "mismatches", "type": "array", "description": "Assignments with match_score below 70"},
+      {"name": "skill_distribution", "type": "object", "description": "Count of workers per skill level"},
+      {"name": "complexity_distribution", "type": "object", "description": "Count of processes per complexity level"},
+      {"name": "num_evaluated", "type": "integer", "description": "Number of assignments evaluated"},
+      {"name": "suggestions", "type": "array", "description": "Reassignment and training suggestions"}
+    ],
+    "description": "Skill matching analysis results with per-assignment scores and recommendations"
+  },
+  "params_schema": [],
+  "example_input": {
+    "workers": [
+      {"worker_id": "W001", "name": "Alice Kim", "skill_level": "Senior"},
+      {"worker_id": "W002", "name": "Bob Park", "skill_level": "Mid"},
+      {"worker_id": "W003", "name": "Charlie Lee", "skill_level": "Junior"},
+      {"worker_id": "W004", "name": "Diana Cho", "skill_level": "Senior"},
+      {"worker_id": "W005", "name": "Edward Han", "skill_level": "Junior"}
+    ],
+    "assignments": [
+      {"process_id": "P001", "parallel_index": 0, "resource_id": "W001", "role": "operator"},
+      {"process_id": "P002", "parallel_index": 0, "resource_id": "W002", "role": "operator"},
+      {"process_id": "P003", "parallel_index": 0, "resource_id": "W003", "role": "operator"},
+      {"process_id": "P004", "parallel_index": 0, "resource_id": "W004", "role": "operator"},
+      {"process_id": "P005", "parallel_index": 0, "resource_id": "W005", "role": "operator"}
+    ],
+    "process_complexity": [
+      {"process_id": "P001", "name": "Precision Welding", "cycle_time_sec": 140.0, "complexity_level": "High"},
+      {"process_id": "P002", "name": "Component Assembly", "cycle_time_sec": 85.0, "complexity_level": "Medium"},
+      {"process_id": "P003", "name": "Wire Harness Install", "cycle_time_sec": 130.0, "complexity_level": "High"},
+      {"process_id": "P004", "name": "Visual Inspection", "cycle_time_sec": 35.0, "complexity_level": "Low"},
+      {"process_id": "P005", "name": "Basic Packaging", "cycle_time_sec": 25.0, "complexity_level": "Low"}
+    ]
+  },
+  "example_output": {
+    "matches": [
+      {"worker_id": "W003", "worker_name": "Charlie Lee", "skill_level": "Junior", "process_id": "P003", "process_name": "Wire Harness Install", "complexity_level": "High", "cycle_time_sec": 130.0, "match_score": 40, "recommendation": "Critical mismatch. High risk of quality issues. Reassign immediately."},
+      {"worker_id": "W004", "worker_name": "Diana Cho", "skill_level": "Senior", "process_id": "P004", "process_name": "Visual Inspection", "complexity_level": "Low", "cycle_time_sec": 35.0, "match_score": 60, "recommendation": "Overqualified. Reassign to higher complexity process."},
+      {"worker_id": "W001", "worker_name": "Alice Kim", "skill_level": "Senior", "process_id": "P001", "process_name": "Precision Welding", "complexity_level": "High", "cycle_time_sec": 140.0, "match_score": 100, "recommendation": "Excellent match. Senior skill well-suited for high complexity."},
+      {"worker_id": "W002", "worker_name": "Bob Park", "skill_level": "Mid", "process_id": "P002", "process_name": "Component Assembly", "complexity_level": "Medium", "cycle_time_sec": 85.0, "match_score": 100, "recommendation": "Excellent match. Mid-level skill well-suited for medium complexity."},
+      {"worker_id": "W005", "worker_name": "Edward Han", "skill_level": "Junior", "process_id": "P005", "process_name": "Basic Packaging", "complexity_level": "Low", "cycle_time_sec": 25.0, "match_score": 100, "recommendation": "Excellent match. Good entry-level assignment."}
+    ],
+    "overall_match_score": 80.0,
+    "mismatches": [
+      {"worker_id": "W003", "worker_name": "Charlie Lee", "skill_level": "Junior", "process_id": "P003", "process_name": "Wire Harness Install", "complexity_level": "High", "cycle_time_sec": 130.0, "match_score": 40, "recommendation": "Critical mismatch. High risk of quality issues. Reassign immediately."},
+      {"worker_id": "W004", "worker_name": "Diana Cho", "skill_level": "Senior", "process_id": "P004", "process_name": "Visual Inspection", "complexity_level": "Low", "cycle_time_sec": 35.0, "match_score": 60, "recommendation": "Overqualified. Reassign to higher complexity process."}
+    ],
+    "skill_distribution": {"Senior": 2, "Mid": 1, "Junior": 2},
+    "complexity_distribution": {"High": 2, "Medium": 1, "Low": 2},
+    "num_evaluated": 5,
+    "suggestions": [
+      "Critical skill mismatches detected: Charlie Lee@Wire Harness Install. Immediate reassignment recommended.",
+      "Moderate skill gaps: Diana Cho@Visual Inspection. Consider training programs or gradual transition."
+    ]
+  }
+}

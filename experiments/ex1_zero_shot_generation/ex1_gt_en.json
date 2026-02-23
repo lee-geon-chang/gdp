@@ -1,0 +1,255 @@
+{
+  "project_name": "Ex1 Benchmark",
+  "dataset_version": "2.0",
+  "language": "en",
+  "description": "Ground truth BOP dataset v2 - all steps directly extracted from accessible HTML references",
+  "ground_truth_bop": [
+    {
+      "product_id": "P01",
+      "product_name": "EV Battery Cell (Electrode to Formation)",
+      "bop_steps": [
+        "Mixing",
+        "Coating",
+        "Drying",
+        "Calendering",
+        "Slitting",
+        "Final Drying",
+        "Cutting",
+        "Winding/Stacking",
+        "Terminal Welding",
+        "Canning (Enclosing)",
+        "Electrolyte Filling",
+        "Formation & Sealing",
+        "Ageing",
+        "Final Control Checks"
+      ],
+      "equipment": ["Banbury Mixer", "Slot Die Coater", "Convective Air Dryer", "Calender Roller", "Slitter", "Vacuum Dryer", "Laser Cutter", "Winding Machine", "Welder", "Canning Machine", "Vacuum Filler", "Cycler"],
+      "references": [
+        {
+          "title": "Battery Design - Battery Cell Manufacturing Process",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/"
+        },
+        {
+          "title": "Battery Design - Electrode Manufacturing",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/electrode-manufacturing/"
+        },
+        {
+          "title": "Battery Design - Cell Assembly",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/cell-assembly/"
+        },
+        {
+          "title": "Battery Design - Formation & Aging",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/formation-aging/"
+        }
+      ],
+      "extraction_note": "14 steps extracted from batterydesign.net across 3 phases: Electrode Manufacturing (4), Cell Assembly (6), Cell Finishing (4). All steps have direct quotes from the source."
+    },
+    {
+      "product_id": "P02",
+      "product_name": "Automotive BIW (Body-in-White)",
+      "bop_steps": [
+        "Steel Plate Preparing",
+        "Coil Carrying & Stretching",
+        "Punching (Blanking)",
+        "Stamping (Drawing)",
+        "Part Arranging",
+        "Body Assembly (Welding)",
+        "Reinforcement Welding",
+        "Door/Hood/Trunk Attachment",
+        "Body Inspection"
+      ],
+      "equipment": ["Decoiler", "Blanking Press", "1600t Mechanical Press", "Welding Robot Cluster", "Adhesive Dispenser"],
+      "references": [
+        {
+          "title": "Toyota Global - Plant Tour: Stamping",
+          "url": "https://global.toyota/en/company/plant-tours/stamping/"
+        },
+        {
+          "title": "Toyota Global - Plant Tour: Welding",
+          "url": "https://global.toyota/en/company/plant-tours/welding/"
+        }
+      ],
+      "extraction_note": "Steps 1-5 from Toyota Stamping plant tour, Steps 6-9 from Toyota Welding plant tour. Stamping has 5 stages (Preparing, Carrying/Stretching, Punching, Stamping, Arranging); Welding has 4 stages (Assembly, Additional Welding, Attaching parts, Inspection)."
+    },
+    {
+      "product_id": "P03",
+      "product_name": "Smartphone SMT (Surface Mount Technology)",
+      "bop_steps": [
+        "PCB Loading",
+        "Solder Paste Printing",
+        "SPI (Solder Paste Inspection)",
+        "Pick and Place (Mounting)",
+        "Reflow Soldering",
+        "AOI (Automated Optical Inspection)",
+        "AXI (Automated X-ray Inspection)"
+      ],
+      "equipment": ["Screen Printer", "3D SPI", "High-speed Chip Mounter", "Reflow Oven", "3D AOI"],
+      "references": [
+        {
+          "title": "PCBOnline - SMT Manufacturing Process",
+          "url": "https://www.pcbonline.com/blog/smt-manufacturing-process.html"
+        }
+      ],
+      "extraction_note": "7 steps extracted from PCBOnline. All steps verified 1:1 against the reference. FAI (First Article Inspection) mentioned in reference as prototyping-only step, excluded from GT."
+    },
+    {
+      "product_id": "P04",
+      "product_name": "Semiconductor Backend Packaging",
+      "bop_steps": [
+        "Bump Formation",
+        "Wafer Dicing",
+        "Flip-Chip Bonding",
+        "Underfill Dispensing",
+        "Molding (Encapsulation)",
+        "Burn-in Testing",
+        "Reliability Testing",
+        "Electrical Characteristic Testing",
+        "Visual Inspection & Laser Marking"
+      ],
+      "equipment": ["Wafer Backgrinder", "Diamond Saw/Laser Dicer", "Flip-Chip Bonder", "Vacuum Molding System", "Burn-in Tester"],
+      "references": [
+        {
+          "title": "Rapidus Tech - Packaging Technology",
+          "url": "https://www.rapidus.inc/en/tech/te0010/"
+        }
+      ],
+      "extraction_note": "9 steps extracted from Rapidus. Testing phase expanded from v1 single 'Final Testing' to 3 sub-steps (Burn-in, Reliability, Electrical) per reference. Visual Inspection bundled with Laser Marking per reference description."
+    },
+    {
+      "product_id": "P05",
+      "product_name": "Solar PV Module Assembly",
+      "bop_steps": [
+        "Cell Sorting/Testing",
+        "Tabbing and Stringing",
+        "Layup",
+        "Lamination",
+        "EL Testing",
+        "Framing",
+        "Junction Box Installation",
+        "IV Flash Test",
+        "Final Inspection & Packaging"
+      ],
+      "equipment": ["Auto Cell Sorter", "Tabber-Stringer", "Auto Lay-up Robot", "Vacuum Heating Laminator", "EL Tester", "Solar Simulator"],
+      "references": [
+        {
+          "title": "Sinovoltaics - Solar Panel Manufacturing Process: From Cell to Module",
+          "url": "https://sinovoltaics.com/learning-center/manufacturing/solar-panel-manufacturing-process-from-cell-to-module/"
+        }
+      ],
+      "extraction_note": "9 steps extracted from Sinovoltaics. Sinovoltaics canonical flow: stringer, lay up, lamination, EL test, frame, junction box assembly, cleaning, IV test, final inspection, packaging. Cell sorting added from supplementary sources (Nerdvolt, PV-Manufacturing.org)."
+    },
+    {
+      "product_id": "P06",
+      "product_name": "EV Motor (Hairpin Stator)",
+      "bop_steps": [
+        "Wire Straightening & Cutting",
+        "Hairpin Forming (Bending)",
+        "Slot Insulation Paper Insertion",
+        "Hairpin Insertion",
+        "Laser Insulation Stripping",
+        "End Twisting",
+        "Laser Welding",
+        "Impregnation (Epoxy Coating)"
+      ],
+      "equipment": ["Servo Wire Feeder", "CNC Bending Machine", "Inserting Nest", "Laser Stripper", "Scanner Laser Welder", "Impregnation System"],
+      "references": [
+        {
+          "title": "GR Winding - Hairpin Electric Motor Explained Simply",
+          "url": "https://www.grwinding.com/hairpin-electric-motor/"
+        },
+        {
+          "title": "Laserax - What is a Hairpin Motor: Benefits & Assembly Process",
+          "url": "https://www.laserax.com/blog/hairpin-motor"
+        }
+      ],
+      "extraction_note": "8 steps compiled from grwinding.com (primary: 6-step sequence with direct quotes) and laserax.com (supplementary: insulation paper detail). Slot insulation paper insertion sourced from Laserax description of insulation paper in stator slots."
+    },
+    {
+      "product_id": "P07",
+      "product_name": "OLED Display Panel",
+      "bop_steps": [
+        "Substrate Preparation",
+        "TFT Backplane Formation",
+        "Organic Layer Deposition (VTE)",
+        "Encapsulation",
+        "Panel Cutting",
+        "Module Assembly (Wiring/Bonding)"
+      ],
+      "equipment": ["Slot Die Coater", "Stepper (Lithography)", "Vacuum Evaporator", "Encapsulation System", "Laser Lift-Off (LLO)", "ACF Bonder"],
+      "references": [
+        {
+          "title": "Canon Tokki - Organic EL Manufacturing Process",
+          "url": "https://tokki.canon/eng/organic_el/process.html"
+        }
+      ],
+      "extraction_note": "6 steps extracted from Canon Tokki 3-phase description: Pre-process (Substrate Prep + TFT), Vapor Deposition (Organic Layer), Post-process (Encapsulation + Cutting + Module Assembly). Canon Tokki states: 'pre-process primarily makes TFT circuits, vapor deposition process mainly deposits organic material, post-process consists of sealing, cutting, and wiring connections.'"
+    },
+    {
+      "product_id": "P08",
+      "product_name": "Domestic Washing Machine",
+      "bop_steps": [
+        "Sheet Metal Pressing/Stamping",
+        "Plastic Injection Molding",
+        "Tub/Drum Manufacturing",
+        "Painting (Powder Coating)",
+        "Sub-assembly (Transmission/Pump)",
+        "Motor/Pump Installation",
+        "Final Assembly",
+        "Leak/Function Testing"
+      ],
+      "equipment": ["Large Hydraulic Press", "Plastic Injection Machine", "Drum Welding Machine", "Powder Coating Line", "Conveyor Assembly Line", "Vibration Analysis Tester"],
+      "references": [
+        {
+          "title": "MadeHow - How Washing Machine is Made",
+          "url": "https://www.madehow.com/Volume-1/Washing-Machine.html"
+        }
+      ],
+      "extraction_note": "8 steps consolidated from MadeHow 3-phase description: Fabrication (Pressing, Injection Molding, Drum Mfg, Painting), Sub-assembly (Transmission/Pump), Final Assembly (Motor/Pump Install, Assembly, Testing). MadeHow provides 15+ detailed sub-steps grouped into these 8 main stages."
+    },
+    {
+      "product_id": "P09",
+      "product_name": "Continuous Pharmaceutical Tablet Manufacturing",
+      "bop_steps": [
+        "Feeding",
+        "Blending/Mixing",
+        "Granulation",
+        "Drying",
+        "Compression (Tableting)",
+        "Coating"
+      ],
+      "equipment": ["Loss-in-Weight Feeder", "Continuous Mixer", "Roller Compactor", "Fluid Bed Dryer", "Rotary Tablet Press", "In-line PAT Device"],
+      "references": [
+        {
+          "title": "Pharmaguideline - Different Stages of Tablet Manufacturing",
+          "url": "https://www.pharmaguideline.com/2023/03/different-stages-of-tablet-manufacturing.html"
+        },
+        {
+          "title": "CRB Group - Oral Solid Dosage Manufacturing",
+          "url": "https://www.crbgroup.com/insights/pharmaceuticals/oral-solid-dosage-manufacturing"
+        }
+      ],
+      "extraction_note": "6 steps consistently confirmed across Pharmaguideline, CRB Group, GEA ConsiGma, U of Michigan encyclopedia, and Tandfonline peer-reviewed article. CRB Group describes fully integrated CM system from 'powders in' to 'tablets out'."
+    },
+    {
+      "product_id": "P10",
+      "product_name": "Tire Manufacturing",
+      "bop_steps": [
+        "Mixing",
+        "Extrusion",
+        "Calendering",
+        "Bead Processing",
+        "Building",
+        "Curing",
+        "Testing & Shipping"
+      ],
+      "equipment": ["Banbury Mixer", "Extruder", "Calender Roller", "Bead Former", "Tire Building Machine (TBM)", "Vulcanizer", "Uniformity Tester"],
+      "references": [
+        {
+          "title": "Nexen Tire - Tire Manufacturing Process",
+          "url": "https://www.nexentire.com/international/information/tire_information/basic_sense/process.php"
+        }
+      ],
+      "extraction_note": "7 steps extracted from Nexen Tire. v1 combined Extrusion/Calendering into one step; v2 separates them per reference. Testing & Shipping combined per reference description."
+    }
+  ]
+}

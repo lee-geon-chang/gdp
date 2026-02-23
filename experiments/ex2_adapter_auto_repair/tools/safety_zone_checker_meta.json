@@ -1,0 +1,130 @@
+{
+  "tool_id": "safety_zone_checker",
+  "tool_name": "Safety Zone Checker",
+  "description": "Check if processes maintain safe distance from obstacles and restricted zones. Calculates minimum bounding-box distance between each process and each obstacle in 3D space, flagging violations where distance is below the safety threshold.",
+  "execution_type": "python",
+  "file_name": "safety_zone_checker.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "processes",
+        "type": "array",
+        "required": true,
+        "description": "List of processes with their 3D bounding box (position + dimensions)",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "required": true, "description": "Unique process identifier"},
+            {"name": "name", "type": "string", "required": true, "description": "Process display name"},
+            {"name": "x", "type": "number", "required": true, "description": "X position (min corner)"},
+            {"name": "y", "type": "number", "required": true, "description": "Y position (min corner)"},
+            {"name": "z", "type": "number", "required": true, "description": "Z position (min corner)"},
+            {"name": "width", "type": "number", "required": true, "description": "Width along X axis"},
+            {"name": "height", "type": "number", "required": true, "description": "Height along Y axis"},
+            {"name": "depth", "type": "number", "required": true, "description": "Depth along Z axis"}
+          ]
+        }
+      },
+      {
+        "name": "obstacles",
+        "type": "array",
+        "required": true,
+        "description": "List of obstacles/restricted zones with their 3D bounding box",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "obstacle_id", "type": "string", "required": true, "description": "Unique obstacle identifier"},
+            {"name": "name", "type": "string", "required": true, "description": "Obstacle display name"},
+            {"name": "type", "type": "string", "required": false, "description": "Obstacle type (structural, safety_zone, restricted, etc.)"},
+            {"name": "x", "type": "number", "required": true, "description": "X position (min corner)"},
+            {"name": "y", "type": "number", "required": true, "description": "Y position (min corner)"},
+            {"name": "z", "type": "number", "required": true, "description": "Z position (min corner)"},
+            {"name": "width", "type": "number", "required": true, "description": "Width along X axis"},
+            {"name": "height", "type": "number", "required": true, "description": "Height along Y axis"},
+            {"name": "depth", "type": "number", "required": true, "description": "Depth along Z axis"}
+          ]
+        }
+      },
+      {
+        "name": "min_safety_distance",
+        "type": "number",
+        "required": false,
+        "description": "Minimum required distance between processes and obstacles (default 1.0 meters)",
+        "default": 1.0
+      }
+    ],
+    "description": "Process bounding boxes, obstacle bounding boxes, and minimum safety distance threshold"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "violations",
+        "type": "array",
+        "description": "List of safety distance violations",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process involved in violation"},
+            {"name": "process_name", "type": "string", "description": "Process display name"},
+            {"name": "obstacle_id", "type": "string", "description": "Obstacle involved in violation"},
+            {"name": "obstacle_name", "type": "string", "description": "Obstacle display name"},
+            {"name": "distance", "type": "number", "description": "Actual distance between bounding boxes"},
+            {"name": "required_distance", "type": "number", "description": "Required minimum distance"},
+            {"name": "is_violation", "type": "boolean", "description": "Always true in violations list"}
+          ]
+        }
+      },
+      {"name": "safe_processes", "type": "array", "description": "Process IDs that have no violations"},
+      {"name": "violation_count", "type": "integer", "description": "Total number of violations"},
+      {"name": "all_safe", "type": "boolean", "description": "True if no violations exist"}
+    ],
+    "description": "Safety check results with violations, safe processes, and summary"
+  },
+  "params_schema": [
+    {
+      "name": "min_safety_distance",
+      "type": "number",
+      "default": 1.0,
+      "description": "Minimum required safety distance in meters between process and obstacle bounding boxes"
+    }
+  ],
+  "example_input": {
+    "processes": [
+      {"process_id": "P1", "name": "Assembly Station 1", "x": 0.0, "y": 0.0, "z": 0.0, "width": 3.0, "height": 2.5, "depth": 2.0},
+      {"process_id": "P2", "name": "Welding Station", "x": 5.0, "y": 0.0, "z": 0.0, "width": 4.0, "height": 3.0, "depth": 3.0},
+      {"process_id": "P3", "name": "Painting Booth", "x": 12.0, "y": 0.0, "z": 0.0, "width": 5.0, "height": 3.5, "depth": 4.0}
+    ],
+    "obstacles": [
+      {"obstacle_id": "OBS1", "name": "Support Pillar A", "type": "structural", "x": 3.5, "y": 0.0, "z": 0.5, "width": 0.5, "height": 4.0, "depth": 0.5},
+      {"obstacle_id": "OBS2", "name": "Electrical Panel", "type": "safety_zone", "x": 9.5, "y": 0.0, "z": 1.0, "width": 1.0, "height": 2.0, "depth": 1.0}
+    ],
+    "min_safety_distance": 1.0
+  },
+  "example_output": {
+    "violations": [
+      {
+        "process_id": "P1",
+        "process_name": "Assembly Station 1",
+        "obstacle_id": "OBS1",
+        "obstacle_name": "Support Pillar A",
+        "distance": 0.5,
+        "required_distance": 1.0,
+        "is_violation": true
+      },
+      {
+        "process_id": "P2",
+        "process_name": "Welding Station",
+        "obstacle_id": "OBS2",
+        "obstacle_name": "Electrical Panel",
+        "distance": 0.5,
+        "required_distance": 1.0,
+        "is_violation": true
+      }
+    ],
+    "safe_processes": ["P3"],
+    "violation_count": 2,
+    "all_safe": false
+  }
+}

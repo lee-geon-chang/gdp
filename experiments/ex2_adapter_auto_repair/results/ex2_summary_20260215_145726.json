@@ -1,0 +1,166 @@
+{
+  "experiment": "Ex2 Tool Adapter Auto-Repair Benchmark",
+  "timestamp": "2026-02-15T14:57:26.149470",
+  "model": "gemini-2.5-flash",
+  "pass_by_k": {
+    "k=0": {
+      "total": 80,
+      "passed": 64,
+      "pass_rate": 0.8
+    },
+    "k=1": {
+      "total": 80,
+      "passed": 79,
+      "pass_rate": 0.9875
+    },
+    "k=2": {
+      "total": 80,
+      "passed": 80,
+      "pass_rate": 1.0
+    },
+    "k=3": {
+      "total": 80,
+      "passed": 80,
+      "pass_rate": 1.0
+    }
+  },
+  "pass_by_difficulty": {
+    "Easy": {
+      "k=0": 1.0,
+      "k=1": 1.0,
+      "k=2": 1.0,
+      "k=3": 1.0
+    },
+    "Medium": {
+      "k=0": 0.8,
+      "k=1": 1.0,
+      "k=2": 1.0,
+      "k=3": 1.0
+    },
+    "Hard": {
+      "k=0": 0.6667,
+      "k=1": 0.9583,
+      "k=2": 1.0,
+      "k=3": 1.0
+    }
+  },
+  "baseline_error_distribution": {
+    "ImportError": 8,
+    "TypeError": 8
+  },
+  "validation_by_k": {
+    "k=0": {
+      "validated": 64,
+      "correct": 63,
+      "correct_rate": 0.9844,
+      "avg_score": 0.9996
+    },
+    "k=1": {
+      "validated": 79,
+      "correct": 67,
+      "correct_rate": 0.8481,
+      "avg_score": 0.9906
+    },
+    "k=2": {
+      "validated": 80,
+      "correct": 67,
+      "correct_rate": 0.8375,
+      "avg_score": 0.9899
+    },
+    "k=3": {
+      "validated": 80,
+      "correct": 67,
+      "correct_rate": 0.8375,
+      "avg_score": 0.9899
+    }
+  },
+  "validation_by_tool": {
+    "bottleneck_analyzer": {
+      "validated": 32,
+      "correct": 32,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    },
+    "energy_estimator": {
+      "validated": 32,
+      "correct": 32,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    },
+    "equipment_utilization": {
+      "validated": 32,
+      "correct": 32,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    },
+    "layout_compactor": {
+      "validated": 23,
+      "correct": 9,
+      "correct_rate": 0.3913,
+      "avg_score": 0.9519,
+      "unique_errors": [
+        "[FAIL] coord_nonneg:P002-1: Negative coordinates: x=4.50, z=-4.00",
+        "[FAIL] coord_nonneg:P004-1: Negative coordinates: x=9.00, z=-4.00",
+        "[FAIL] coord_nonneg:P002-1: Negative coordinates: x=4.50, z=-3.00",
+        "[FAIL] coord_nonneg:P012-1: Negative coordinates: x=64.50, z=-3.00",
+        "[FAIL] reduction_range: Reduction -2.88% outside [0, 100]",
+        "[FAIL] coord_nonneg:P002-1: Negative coordinates: x=4.50, z=-2.00",
+        "[FAIL] span_not_expanded: Compacted span 53.50 > original 52.00",
+        "[FAIL] coord_nonneg:P001-1: Negative coordinates: x=0.00, z=-3.00"
+      ]
+    },
+    "line_balance_calculator": {
+      "validated": 32,
+      "correct": 32,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    },
+    "material_flow_analyzer": {
+      "validated": 32,
+      "correct": 32,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    },
+    "process_distance_analyzer": {
+      "validated": 32,
+      "correct": 32,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    },
+    "safety_zone_checker": {
+      "validated": 32,
+      "correct": 32,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    },
+    "takt_time_optimizer": {
+      "validated": 32,
+      "correct": 28,
+      "correct_rate": 0.875,
+      "avg_score": 0.9965,
+      "unique_errors": [
+        "[FAIL] parallel_not_reduced:P012: Reduced from 2 to 1"
+      ]
+    },
+    "worker_skill_matcher": {
+      "validated": 24,
+      "correct": 3,
+      "correct_rate": 0.125,
+      "avg_score": 0.9514,
+      "unique_errors": [
+        "[FAIL] skill_dist_sum: Skill distribution sum=3, matches count=7",
+        "[FAIL] skill_dist_sum: Skill distribution sum=12, matches count=16",
+        "[FAIL] skill_dist_sum: Skill distribution sum=4, matches count=10",
+        "[FAIL] skill_dist_sum: Skill distribution sum=6, matches count=9",
+        "[FAIL] skill_dist_sum: Skill distribution sum=4, matches count=6"
+      ]
+    }
+  }
+}

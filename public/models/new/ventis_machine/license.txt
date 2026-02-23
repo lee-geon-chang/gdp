@@ -1,0 +1,11 @@
+Model Information:
+* title:	VENTIS 3015 AJ
+* source:	https://sketchfab.com/3d-models/ventis-3015-aj-dbee83a03ccb4a2c9d78d85ddfc4cada
+* author:	vexhibition (https://sketchfab.com/vexhibition)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "VENTIS 3015 AJ" (https://sketchfab.com/3d-models/ventis-3015-aj-dbee83a03ccb4a2c9d78d85ddfc4cada) by vexhibition (https://sketchfab.com/vexhibition) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

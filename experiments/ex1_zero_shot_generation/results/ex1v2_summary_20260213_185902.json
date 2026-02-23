@@ -1,0 +1,20 @@
+{
+  "experiment": "Ex1 v2 Zero-shot BOP Generation",
+  "dataset_version": "2.0",
+  "timestamp": "2026-02-13T18:59:02.086949",
+  "config": {
+    "temperature": 0.0,
+    "similarity_threshold": 0.4,
+    "prompt_source": "app/prompts.py SYSTEM_PROMPT"
+  },
+  "model_averages": {
+    "Gemini 2.5 Pro": {
+      "avg_accuracy": 0.8333,
+      "avg_sequence_match": 0.9,
+      "avg_generated_count": 7.0,
+      "avg_latency_sec": 46.3,
+      "success_rate": 1.0,
+      "products_tested": 1
+    }
+  }
+}

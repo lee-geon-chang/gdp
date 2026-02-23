@@ -1,0 +1,152 @@
+% ============================================
+% Table 1: Pass@k by Repair Budget
+% ============================================
+\begin{table}[t]
+\centering
+\caption{Pass rate by maximum repair budget $k$. A single adapter is generated per tool; execution is tested across 8 BOP scenarios (10 tools $\times$ 8 BOPs = 80 runs per $k$).}
+\label{tab:pass_at_k}
+\begin{tabular}{crrc}
+\toprule
+$k$ & Pass & Fail & Pass Rate \\
+\midrule
+0 & 64 & 16 & 80.0% \\
+1 & 79 & 1 & 98.8% \\
+2 & 80 & 0 & \textbf{100.0%} \\
+3 & 80 & 0 & \textbf{100.0%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% Table 2: Pass@k by Difficulty Level
+% ============================================
+\begin{table}[t]
+\centering
+\caption{Pass rate by adapter difficulty level and repair budget $k$.}
+\label{tab:pass_by_difficulty}
+\begin{tabular}{lc c c c}
+\toprule
+Difficulty & $k=0$ & $k=1$ & $k=2$ & $k=3$ \\
+\midrule
+Easy & 100% & 100% & 100% & 100% \\
+Medium & 32/40 (80.0%) & 100% & 100% & 100% \\
+Hard & 16/24 (66.7%) & 23/24 (95.8%) & 100% & 100% \\
+\midrule
+\textbf{Overall} & \textbf{80%} & \textbf{99%} & \textbf{100%} & \textbf{100%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% Table 3: Per-Tool Results
+% ============================================
+\begin{table}[t]
+\centering
+\caption{Per-tool pass rate across 8 BOP scenarios. Adapter generation model: \texttt{gemini-2.5-flash}.}
+\label{tab:per_tool}
+\begin{tabular}{llcccc}
+\toprule
+Tool & Diff. & $k{=}0$ & $k{=}1$ & $k{=}2$ & $k{=}3$ \\
+\midrule
+\texttt{bottleneck\_analyzer} & E & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{line\_balance\_calculator} & E & 8/8 & 8/8 & 8/8 & 8/8 \\
+\cmidrule(lr){1-6}
+\texttt{equipment\_utilization} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{material\_flow\_analyzer} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{process\_distance\_analyzer} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{safety\_zone\_checker} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{worker\_skill\_matcher} & M & 0/8 & 8/8 & 8/8 & 8/8 \\
+\cmidrule(lr){1-6}
+\texttt{energy\_estimator} & H & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{layout\_compactor} & H & 0/8 & 7/8 & 8/8 & 8/8 \\
+\texttt{takt\_time\_optimizer} & H & 8/8 & 8/8 & 8/8 & 8/8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% Table 4: Baseline Error Analysis
+% ============================================
+\begin{table}[t]
+\centering
+\caption{Error analysis at $k{=}0$ (baseline, no repair).}
+\label{tab:errors}
+\begin{tabular}{llllc}
+\toprule
+Error Type & Phase & Affected Tool & Root Cause & Count \\
+\midrule
+\texttt{ImportError} & pre\_process & \texttt{layout\_compactor} & Forbidden module & 8 \\
+\texttt{TypeError} & post\_process & \texttt{worker\_skill\_matcher} & Return type error & 8 \\
+\midrule
+\textbf{Total} & & & & \textbf{16/80} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% Table 5: Repair Convergence
+% ============================================
+\begin{table}[t]
+\centering
+\caption{Auto-repair convergence statistics.}
+\label{tab:repair}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+Baseline failures (k=0) & 16 \\
+Successfully repaired (k$\geq$1) & 47 \\
+Avg. repair attempts & 1.1 \\
+Max repair attempts needed & 2 \\
+Repair success rate & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% Table 6: Output Correctness by Repair Budget
+% ============================================
+\begin{table}[t]
+\centering
+\caption{Two-tier evaluation: execution pass rate vs.\ output correctness (property-based validation). Output correctness is measured only for runs that passed execution.}
+\label{tab:correctness}
+\begin{tabular}{crrcrrc}
+\toprule
+$k$ & \multicolumn{2}{c}{Execution} & & \multicolumn{2}{c}{Output Correct} & Full Pass \\
+\cmidrule(lr){2-3} \cmidrule(lr){5-6}
+ & Pass & Rate & & Correct & Rate & Rate \\
+\midrule
+0 & 64/80 & 80.0% & & 63/64 & 98.4% & 78.8% \\
+1 & 79/80 & 98.8% & & 67/79 & 84.8% & 83.8% \\
+2 & 80/80 & \textbf{100\%} & & 67/80 & 83.8% & 83.8% \\
+3 & 80/80 & \textbf{100\%} & & 67/80 & 83.8% & 83.8% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% Table 7: Per-Tool Output Correctness
+% ============================================
+\begin{table}[t]
+\centering
+\caption{Per-tool output correctness. Avg.\ Score is the mean ratio of passed validation checks.}
+\label{tab:per_tool_correctness}
+\begin{tabular}{llrrl}
+\toprule
+Tool & Diff. & Correct Rate & Avg. Score & Primary Error \\
+\midrule
+\texttt{bottleneck\_analyzer} & E & 100% & 100.0% & -- \\
+\texttt{line\_balance\_calculator} & E & 100% & 100.0% & -- \\
+\cmidrule(lr){1-5}
+\texttt{equipment\_utilization} & M & 100% & 100.0% & -- \\
+\texttt{material\_flow\_analyzer} & M & 100% & 100.0% & -- \\
+\texttt{process\_distance\_analyzer} & M & 100% & 100.0% & -- \\
+\texttt{safety\_zone\_checker} & M & 100% & 100.0% & -- \\
+\texttt{worker\_skill\_matcher} & M & \textbf{12%} & 95.1% & skill_dist_sum \\
+\cmidrule(lr){1-5}
+\texttt{energy\_estimator} & H & 100% & 100.0% & -- \\
+\texttt{layout\_compactor} & H & \textbf{39%} & 95.2% & coord_nonneg:P002-1 \\
+\texttt{takt\_time\_optimizer} & H & \textbf{88%} & 99.7% & parallel_not_reduced:P012 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,255 @@
+{
+  "project_name": "Ex1 Benchmark",
+  "dataset_version": "2.0",
+  "language": "ko",
+  "description": "GT BOP 데이터셋 v2 - 모든 스텝이 접근 가능한 HTML 레퍼런스에서 직접 추출됨",
+  "ground_truth_bop": [
+    {
+      "product_id": "P01",
+      "product_name": "EV 배터리 셀 (전극~화성)",
+      "bop_steps": [
+        "혼합(Mixing)",
+        "코팅(Coating)",
+        "건조(Drying)",
+        "압연(Calendering)",
+        "슬리팅(Slitting)",
+        "최종 건조(Final Drying)",
+        "절단(Cutting)",
+        "권취/적층(Winding/Stacking)",
+        "단자 용접(Terminal Welding)",
+        "캐닝(Canning)",
+        "전해액 주입(Electrolyte Filling)",
+        "화성 및 실링(Formation & Sealing)",
+        "에이징(Ageing)",
+        "최종 검사(Final Control Checks)"
+      ],
+      "equipment": ["반버리 믹서", "슬롯 다이 코터", "대류식 에어 드라이어", "캘린더 롤러", "슬리터", "진공 건조기", "레이저 커터", "와인딩 머신", "용접기", "캐닝 머신", "진공 주입기", "사이클러"],
+      "references": [
+        {
+          "title": "Battery Design - Battery Cell Manufacturing Process",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/"
+        },
+        {
+          "title": "Battery Design - Electrode Manufacturing",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/electrode-manufacturing/"
+        },
+        {
+          "title": "Battery Design - Cell Assembly",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/cell-assembly/"
+        },
+        {
+          "title": "Battery Design - Formation & Aging",
+          "url": "https://www.batterydesign.net/manufacture/cell-manufacturing/battery-cell-manufacturing-process/formation-aging/"
+        }
+      ],
+      "extraction_note": "batterydesign.net에서 3개 단계(전극 제조 4, 셀 조립 6, 셀 마감 4)로 14개 스텝 추출. 모든 스텝에 원문 직접 인용 가능."
+    },
+    {
+      "product_id": "P02",
+      "product_name": "자동차 차체 (Body-in-White)",
+      "bop_steps": [
+        "강판 준비(Preparing)",
+        "코일 이송 및 스트레칭(Carrying & Stretching)",
+        "펀칭/블랭킹(Punching)",
+        "스탬핑/드로잉(Stamping)",
+        "부품 정렬(Arranging)",
+        "차체 조립/용접(Body Assembly)",
+        "보강 용접(Reinforcement Welding)",
+        "도어/후드/트렁크 장착(Door/Hood/Trunk Attachment)",
+        "차체 검사(Body Inspection)"
+      ],
+      "equipment": ["디코일러", "블랭킹 프레스", "1600톤급 기계식 프레스", "용접 로봇 클러스터", "접착제 디스펜서"],
+      "references": [
+        {
+          "title": "Toyota Global - Plant Tour: Stamping",
+          "url": "https://global.toyota/en/company/plant-tours/stamping/"
+        },
+        {
+          "title": "Toyota Global - Plant Tour: Welding",
+          "url": "https://global.toyota/en/company/plant-tours/welding/"
+        }
+      ],
+      "extraction_note": "Toyota 공장 투어 페이지에서 추출. 스탬핑 5단계(준비, 이송, 펀칭, 스탬핑, 정렬) + 용접 4단계(조립, 보강용접, 부품장착, 검사)."
+    },
+    {
+      "product_id": "P03",
+      "product_name": "스마트폰 SMT (Surface Mount Technology)",
+      "bop_steps": [
+        "PCB 로딩",
+        "솔더 페이스트 인쇄(Solder Paste Printing)",
+        "SPI(솔더 페이스트 검사)",
+        "픽 앤 플레이스(실장)",
+        "리플로우 솔더링",
+        "AOI(자동 광학 검사)",
+        "AXI(자동 X-ray 검사)"
+      ],
+      "equipment": ["스크린 프린터", "3D SPI", "고속 칩 마운터", "리플로우 오븐", "3D AOI"],
+      "references": [
+        {
+          "title": "PCBOnline - SMT Manufacturing Process",
+          "url": "https://www.pcbonline.com/blog/smt-manufacturing-process.html"
+        }
+      ],
+      "extraction_note": "PCBOnline에서 7개 스텝 추출 및 1:1 검증 완료. FAI(First Article Inspection)는 프로토타입 전용이므로 GT에서 제외."
+    },
+    {
+      "product_id": "P04",
+      "product_name": "반도체 후공정 (Backend Packaging)",
+      "bop_steps": [
+        "범프 형성(Bump Formation)",
+        "웨이퍼 다이싱(Wafer Dicing)",
+        "플립칩 본딩(Flip-Chip Bonding)",
+        "언더필 주입(Underfill Dispensing)",
+        "몰딩/캡슐화(Molding)",
+        "번인 테스트(Burn-in Testing)",
+        "신뢰성 테스트(Reliability Testing)",
+        "전기 특성 테스트(Electrical Characteristic Testing)",
+        "외관 검사 및 레이저 마킹(Visual Inspection & Laser Marking)"
+      ],
+      "equipment": ["웨이퍼 백그라인더", "다이아몬드 소/레이저 다이서", "플립칩 본더", "진공 몰딩 시스템", "번인 테스터"],
+      "references": [
+        {
+          "title": "Rapidus Tech - Packaging Technology",
+          "url": "https://www.rapidus.inc/en/tech/te0010/"
+        }
+      ],
+      "extraction_note": "Rapidus에서 9개 스텝 추출. v1의 '최종 테스트' 1개 스텝을 레퍼런스에 따라 번인/신뢰성/전기특성 3개로 세분화. 외관검사와 레이저마킹은 레퍼런스에서 함께 기술."
+    },
+    {
+      "product_id": "P05",
+      "product_name": "태양광 PV 모듈 조립",
+      "bop_steps": [
+        "셀 소팅/테스팅(Cell Sorting/Testing)",
+        "태빙 및 스트링잉(Tabbing and Stringing)",
+        "레이업(Layup)",
+        "라미네이션(Lamination)",
+        "EL 테스트(EL Testing)",
+        "프레이밍(Framing)",
+        "정션 박스 설치(Junction Box Installation)",
+        "IV 플래시 테스트(IV Flash Test)",
+        "최종 검사 및 포장(Final Inspection & Packaging)"
+      ],
+      "equipment": ["자동 셀 소터", "태버-스트링어", "자동 레이업 로봇", "진공 가열 라미네이터", "EL 테스터", "솔라 시뮬레이터"],
+      "references": [
+        {
+          "title": "Sinovoltaics - Solar Panel Manufacturing Process: From Cell to Module",
+          "url": "https://sinovoltaics.com/learning-center/manufacturing/solar-panel-manufacturing-process-from-cell-to-module/"
+        }
+      ],
+      "extraction_note": "Sinovoltaics의 정규 공정 흐름(stringer→lay up→lamination→EL test→frame→junction box→cleaning→IV test→final inspection→packaging)에서 9개 스텝 추출. 셀 소팅은 PV-Manufacturing.org 보조 출처에서 확인."
+    },
+    {
+      "product_id": "P06",
+      "product_name": "전기차 모터 (Hairpin Stator)",
+      "bop_steps": [
+        "와이어 교정 및 절단(Wire Straightening & Cutting)",
+        "헤어핀 성형/벤딩(Hairpin Forming)",
+        "슬롯 절연지 삽입(Slot Insulation Paper Insertion)",
+        "헤어핀 삽입(Hairpin Insertion)",
+        "레이저 절연 탈피(Laser Insulation Stripping)",
+        "끝단 트위스팅(End Twisting)",
+        "레이저 용접(Laser Welding)",
+        "함침/에폭시 코팅(Impregnation)"
+      ],
+      "equipment": ["서보 와이어 피더", "CNC 벤딩기", "인설팅 네스트", "레이저 탈피기", "스캐너 레이저 용접기", "함침 시스템"],
+      "references": [
+        {
+          "title": "GR Winding - Hairpin Electric Motor Explained Simply",
+          "url": "https://www.grwinding.com/hairpin-electric-motor/"
+        },
+        {
+          "title": "Laserax - What is a Hairpin Motor: Benefits & Assembly Process",
+          "url": "https://www.laserax.com/blog/hairpin-motor"
+        }
+      ],
+      "extraction_note": "grwinding.com(1차: 6단계 시퀀스)과 laserax.com(보조: 절연지 삽입 상세)에서 8개 스텝 구성. grwinding.com에서 교정/절단→성형→삽입→탈피→트위스팅/용접→함침 순서 추출."
+    },
+    {
+      "product_id": "P07",
+      "product_name": "OLED 디스플레이 패널",
+      "bop_steps": [
+        "기판 전처리(Substrate Preparation)",
+        "TFT 백플레인 제조(TFT Backplane Formation)",
+        "유기물 증착(Organic Layer Deposition/VTE)",
+        "봉지(Encapsulation)",
+        "패널 절단(Panel Cutting)",
+        "모듈 조립/배선(Module Assembly)"
+      ],
+      "equipment": ["슬롯 다이 코터", "노광기(Stepper)", "진공 증착기", "봉지 시스템", "레이저 박리 장치(LLO)", "ACF 본더"],
+      "references": [
+        {
+          "title": "Canon Tokki - Organic EL Manufacturing Process",
+          "url": "https://tokki.canon/eng/organic_el/process.html"
+        }
+      ],
+      "extraction_note": "Canon Tokki의 3단계 기술에서 6개 스텝 추출: 전공정(기판+TFT), 증착공정(유기물), 후공정(봉지+절단+모듈). 원문: 'pre-process primarily makes TFT circuits, vapor deposition process mainly deposits organic material, post-process consists of sealing, cutting, and wiring connections.'"
+    },
+    {
+      "product_id": "P08",
+      "product_name": "가정용 세탁기",
+      "bop_steps": [
+        "박판 프레스/스탬핑(Sheet Metal Pressing)",
+        "플라스틱 사출 성형(Plastic Injection Molding)",
+        "드럼/수조 제조(Tub/Drum Manufacturing)",
+        "도장/분체 도장(Painting/Powder Coating)",
+        "서브 조립(Sub-assembly: Transmission/Pump)",
+        "모터/펌프 장착(Motor/Pump Installation)",
+        "최종 조립(Final Assembly)",
+        "누수/기능 테스트(Leak/Function Testing)"
+      ],
+      "equipment": ["대형 유압 프레스", "플라스틱 사출기", "드럼 용접기", "분체 도장 라인", "컨베이어 조립 라인", "진동 분석 검사기"],
+      "references": [
+        {
+          "title": "MadeHow - How Washing Machine is Made",
+          "url": "https://www.madehow.com/Volume-1/Washing-Machine.html"
+        }
+      ],
+      "extraction_note": "MadeHow의 3단계(Fabrication, Sub-assembly, Final Assembly)에서 8개 스텝으로 통합. 원문에는 15개 이상의 세부 하위 스텝이 있으나 주요 공정 단위로 그룹화."
+    },
+    {
+      "product_id": "P09",
+      "product_name": "연속식 제약 정제 제조",
+      "bop_steps": [
+        "원료 공급(Feeding)",
+        "혼합(Blending/Mixing)",
+        "과립화(Granulation)",
+        "건조(Drying)",
+        "타정(Compression/Tableting)",
+        "코팅(Coating)"
+      ],
+      "equipment": ["중량 감량식 피더", "연속 혼합기", "롤러 컴팩터", "유동층 건조기", "로터리 타정기", "인라인 PAT 장치"],
+      "references": [
+        {
+          "title": "Pharmaguideline - Different Stages of Tablet Manufacturing",
+          "url": "https://www.pharmaguideline.com/2023/03/different-stages-of-tablet-manufacturing.html"
+        },
+        {
+          "title": "CRB Group - Oral Solid Dosage Manufacturing",
+          "url": "https://www.crbgroup.com/insights/pharmaceuticals/oral-solid-dosage-manufacturing"
+        }
+      ],
+      "extraction_note": "Pharmaguideline, CRB Group, GEA, 미시간대 백과사전, Tandfonline 논문 등 6개 출처에서 동일한 6단계 공정 확인. CRB Group: 'powders in to tablets out' 완전 연속 통합 시스템."
+    },
+    {
+      "product_id": "P10",
+      "product_name": "타이어 제조",
+      "bop_steps": [
+        "정련/혼합(Mixing)",
+        "압출(Extrusion)",
+        "압연(Calendering)",
+        "비드 가공(Bead Processing)",
+        "성형(Building)",
+        "가류(Curing)",
+        "검사 및 출하(Testing & Shipping)"
+      ],
+      "equipment": ["반버리 믹서", "압출기", "캘린더 롤러", "비드 성형기", "타이어 성형기(TBM)", "가류 프레스", "유니포미티 검사기"],
+      "references": [
+        {
+          "title": "Nexen Tire - Tire Manufacturing Process",
+          "url": "https://www.nexentire.com/international/information/tire_information/basic_sense/process.php"
+        }
+      ],
+      "extraction_note": "Nexen Tire에서 7개 스텝 추출. v1에서 압출/압연을 하나로 결합했으나 v2에서는 레퍼런스에 따라 분리. 검사 및 출하는 레퍼런스에서 함께 기술."
+    }
+  ]
+}

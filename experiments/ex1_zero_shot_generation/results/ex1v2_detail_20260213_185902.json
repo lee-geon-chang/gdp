@@ -1,0 +1,92 @@
+{
+  "experiment": "Ex1 v2 Zero-shot BOP Generation",
+  "dataset_version": "2.0",
+  "timestamp": "2026-02-13T18:59:02.082866",
+  "config": {
+    "temperature": 0.0,
+    "similarity_threshold": 0.4,
+    "prompt_source": "app/prompts.py SYSTEM_PROMPT",
+    "models": [
+      "gemini-2.5-pro"
+    ],
+    "products": [
+      "P09"
+    ]
+  },
+  "results": [
+    {
+      "product_id": "P09",
+      "product_name": "연속식 제약 정제 제조",
+      "model": "Gemini 2.5 Pro",
+      "model_id": "gemini-2.5-pro",
+      "success": true,
+      "generated_processes": [
+        "원료 공급 및 혼합",
+        "건식 과립",
+        "활택제 혼합",
+        "타정",
+        "연속 코팅",
+        "품질 검사",
+        "블리스터 포장"
+      ],
+      "generated_equipments": [
+        "정량 공급기 (Loss-in-weight Feeder)",
+        "연속 혼합기 (Continuous Blender)",
+        "롤러 압축기 (Roller Compactor)",
+        "회전식 타정기 (Rotary Tablet Press)",
+        "연속 코팅기 (Continuous Coater)",
+        "정제 비전 검사기",
+        "블리스터 포장기",
+        "오퍼레이터 스테이션",
+        "품질관리 스테이션"
+      ],
+      "process_count": 7,
+      "evaluation": {
+        "n": 5,
+        "M": 6,
+        "accuracy": 0.8333,
+        "sequence_match": 0.9,
+        "generated_count": 7,
+        "matches": [
+          {
+            "gt_idx": 0,
+            "gen_idx": 0,
+            "gt_step": "원료 공급(Feeding)",
+            "gen_step": "원료 공급 및 혼합",
+            "similarity": 0.9
+          },
+          {
+            "gt_idx": 1,
+            "gen_idx": 2,
+            "gt_step": "혼합(Blending/Mixing)",
+            "gen_step": "활택제 혼합",
+            "similarity": 0.9
+          },
+          {
+            "gt_idx": 2,
+            "gen_idx": 1,
+            "gt_step": "과립화(Granulation)",
+            "gen_step": "건식 과립",
+            "similarity": 0.5
+          },
+          {
+            "gt_idx": 4,
+            "gen_idx": 3,
+            "gt_step": "타정(Compression/Tableting)",
+            "gen_step": "타정",
+            "similarity": 1.0
+          },
+          {
+            "gt_idx": 5,
+            "gen_idx": 4,
+            "gt_step": "코팅(Coating)",
+            "gen_step": "연속 코팅",
+            "similarity": 0.9
+          }
+        ]
+      },
+      "error": null,
+      "latency_sec": 46.3
+    }
+  ]
+}

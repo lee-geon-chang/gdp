@@ -1,0 +1,440 @@
+{
+  "project_title": "복합 부품 생산 라인",
+  "target_uph": 60,
+  "processes": [
+    {
+      "process_id": "P001",
+      "predecessor_ids": [],
+      "successor_ids": ["P002", "P003"]
+    },
+    {
+      "process_id": "P002",
+      "predecessor_ids": ["P001"],
+      "successor_ids": ["P004"]
+    },
+    {
+      "process_id": "P003",
+      "predecessor_ids": ["P001"],
+      "successor_ids": ["P005"]
+    },
+    {
+      "process_id": "P004",
+      "predecessor_ids": ["P002"],
+      "successor_ids": ["P006"]
+    },
+    {
+      "process_id": "P005",
+      "predecessor_ids": ["P003"],
+      "successor_ids": ["P006"]
+    },
+    {
+      "process_id": "P006",
+      "predecessor_ids": ["P004", "P005"],
+      "successor_ids": ["P007"]
+    },
+    {
+      "process_id": "P007",
+      "predecessor_ids": ["P006"],
+      "successor_ids": ["P008"]
+    },
+    {
+      "process_id": "P008",
+      "predecessor_ids": ["P007"],
+      "successor_ids": []
+    }
+  ],
+  "process_details": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "name": "원자재 준비",
+      "description": "원자재 입고 검수 및 가공 전 준비",
+      "cycle_time_sec": 45,
+      "location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "name": "부품A 가공",
+      "description": "CNC 밀링을 이용한 부품A 정밀 가공",
+      "cycle_time_sec": 90,
+      "location": { "x": 7, "y": 0, "z": -4 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "name": "부품B 성형",
+      "description": "사출 성형기를 이용한 부품B 성형",
+      "cycle_time_sec": 80,
+      "location": { "x": 7, "y": 0, "z": 4 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "name": "부품A 열처리",
+      "description": "부품A 강도 향상을 위한 열처리 공정",
+      "cycle_time_sec": 120,
+      "location": { "x": 14, "y": 0, "z": -4 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.5, "height": 3.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "name": "부품B 코팅",
+      "description": "부품B 내구성 향상을 위한 표면 코팅",
+      "cycle_time_sec": 100,
+      "location": { "x": 14, "y": 0, "z": 4 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "name": "조립",
+      "description": "부품A와 부품B를 결합하여 완제품 조립",
+      "cycle_time_sec": 150,
+      "location": { "x": 21, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 2.5, "depth": 3.5 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "name": "품질 검사",
+      "description": "치수, 외관, 기능 종합 품질 검사",
+      "cycle_time_sec": 60,
+      "location": { "x": 28, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "name": "포장",
+      "description": "완제품 포장 및 출하 준비",
+      "cycle_time_sec": 40,
+      "location": { "x": 35, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    }
+  ],
+  "resource_assignments": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-RECV-01",
+      "quantity": 1,
+      "role": "입고 검수대",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1, "z": 1.2 },
+      "computed_size": { "width": 2.0, "height": 1.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "자재 관리원",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-RAWMTL",
+      "quantity": 10,
+      "role": "알루미늄 합금 소재",
+      "relative_location": { "x": -1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.0, "height": 0.5, "depth": 1.0 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-RESIN",
+      "quantity": 5,
+      "role": "엔지니어링 플라스틱 수지",
+      "relative_location": { "x": -1.5, "y": 0, "z": 1.2 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 0.8, "depth": 0.8 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-CNC-01",
+      "quantity": 1,
+      "role": "CNC 밀링 머신",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "CNC 운전원",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-INJ-01",
+      "quantity": 1,
+      "role": "사출 성형기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.5, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "사출 기술자",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-HEAT-01",
+      "quantity": 1,
+      "role": "열처리로",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.8, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.5, "height": 3.0, "depth": 2.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W004",
+      "quantity": 1,
+      "role": "열처리 기술자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-COAT-01",
+      "quantity": 1,
+      "role": "코팅 챔버",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.2, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "코팅 기술자",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-ASSY-01",
+      "quantity": 1,
+      "role": "조립 로봇",
+      "relative_location": { "x": 0, "y": 0, "z": -1 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PRESS-01",
+      "quantity": 1,
+      "role": "압입 프레스",
+      "relative_location": { "x": 0, "y": 0, "z": 1 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1.2, "z": 1.2 },
+      "computed_size": { "width": 1.5, "height": 2.0, "depth": 1.5 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "조립 작업자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W005",
+      "quantity": 1,
+      "role": "조립 보조",
+      "relative_location": { "x": 2.0, "y": 0, "z": 1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-BOLT",
+      "quantity": 20,
+      "role": "체결 볼트",
+      "relative_location": { "x": -2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.4, "height": 0.3, "depth": 0.4 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-QC-01",
+      "quantity": 1,
+      "role": "3차원 측정기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1.2, "z": 1.2 },
+      "computed_size": { "width": 2.0, "height": 2.0, "depth": 2.0 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W006",
+      "quantity": 1,
+      "role": "품질 검사원",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PACK-01",
+      "quantity": 1,
+      "role": "자동 포장기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.0, "depth": 2.0 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "포장 작업자",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    }
+  ],
+  "equipments": [
+    { "equipment_id": "EQ-RECV-01", "name": "입고 검수대", "type": "manual_station" },
+    { "equipment_id": "EQ-CNC-01", "name": "CNC 밀링 머신", "type": "machine" },
+    { "equipment_id": "EQ-INJ-01", "name": "사출 성형기", "type": "machine" },
+    { "equipment_id": "EQ-HEAT-01", "name": "열처리로", "type": "machine" },
+    { "equipment_id": "EQ-COAT-01", "name": "코팅 챔버", "type": "machine" },
+    { "equipment_id": "EQ-ASSY-01", "name": "조립 로봇", "type": "robot" },
+    { "equipment_id": "EQ-PRESS-01", "name": "압입 프레스", "type": "machine" },
+    { "equipment_id": "EQ-QC-01", "name": "3차원 측정기", "type": "machine" },
+    { "equipment_id": "EQ-PACK-01", "name": "자동 포장기", "type": "machine" }
+  ],
+  "workers": [
+    { "worker_id": "W001", "name": "김수호", "skill_level": "Mid" },
+    { "worker_id": "W002", "name": "이태현", "skill_level": "Senior" },
+    { "worker_id": "W003", "name": "박준영", "skill_level": "Senior" },
+    { "worker_id": "W004", "name": "최민규", "skill_level": "Senior" },
+    { "worker_id": "W005", "name": "정도윤", "skill_level": "Junior" },
+    { "worker_id": "W006", "name": "강서연", "skill_level": "Senior" }
+  ],
+  "materials": [
+    { "material_id": "M-RAWMTL", "name": "알루미늄 합금 소재", "unit": "kg" },
+    { "material_id": "M-RESIN", "name": "엔지니어링 플라스틱 수지", "unit": "kg" },
+    { "material_id": "M-BOLT", "name": "체결 볼트 세트", "unit": "ea" }
+  ],
+  "obstacles": [
+    {
+      "obstacle_id": "OBS001",
+      "name": "안전 펜스 북측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": -7 },
+      "size": { "width": 40, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS002",
+      "name": "안전 펜스 남측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": 7 },
+      "size": { "width": 40, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS003",
+      "name": "열처리 안전 구역",
+      "type": "zone",
+      "position": { "x": 12, "y": 0, "z": -4 },
+      "size": { "width": 6, "height": 0.05, "depth": 5 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS004",
+      "name": "구조 기둥",
+      "type": "pillar",
+      "position": { "x": 17.5, "y": 0, "z": 0 },
+      "size": { "width": 0.5, "height": 4.0, "depth": 0.5 },
+      "rotation_y": 0
+    }
+  ]
+}

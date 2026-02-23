@@ -1,0 +1,37 @@
+{
+  "experiment": "Ex2 Tool Adapter Auto-Repair Benchmark",
+  "timestamp": "2026-02-15T14:36:35.579922",
+  "model": "gemini-2.5-flash",
+  "pass_by_k": {
+    "k=0": {
+      "total": 1,
+      "passed": 1,
+      "pass_rate": 1.0
+    }
+  },
+  "pass_by_difficulty": {
+    "Easy": {
+      "k=0": 1.0
+    },
+    "Medium": {},
+    "Hard": {}
+  },
+  "baseline_error_distribution": {},
+  "validation_by_k": {
+    "k=0": {
+      "validated": 1,
+      "correct": 1,
+      "correct_rate": 1.0,
+      "avg_score": 1.0
+    }
+  },
+  "validation_by_tool": {
+    "bottleneck_analyzer": {
+      "validated": 1,
+      "correct": 1,
+      "correct_rate": 1.0,
+      "avg_score": 1.0,
+      "unique_errors": []
+    }
+  }
+}

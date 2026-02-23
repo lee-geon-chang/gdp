@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
+.env.local
+
+# Runtime data
+data/
+uploads/
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts (dist/ is intentionally tracked for deployment)
+# dist/
+
+# 3D source files (large)
+3d_source/
+*.zip
+
+# Temporary files
+*.tmp
+*.bak
+nul

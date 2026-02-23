@@ -1,0 +1,141 @@
+{
+  "tool_id": "layout_compactor",
+  "tool_name": "Layout Compactor",
+  "description": "Compact process layout to minimize total footprint while maintaining minimum gaps between stations. Sorts nodes in topological order along the flow direction and places each node as close as possible to its predecessors. Calculates total span reduction.",
+  "execution_type": "python",
+  "file_name": "layout_compactor.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "layout_nodes",
+        "type": "array",
+        "required": true,
+        "description": "List of layout nodes with position, size, and DAG relationships",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "node_id", "type": "string", "required": true, "description": "Unique node identifier"},
+            {"name": "name", "type": "string", "required": true, "description": "Node display name"},
+            {"name": "x", "type": "number", "required": true, "description": "X position"},
+            {"name": "y", "type": "number", "required": true, "description": "Y position (vertical, usually 0)"},
+            {"name": "z", "type": "number", "required": true, "description": "Z position"},
+            {"name": "width", "type": "number", "required": true, "description": "Width along X axis"},
+            {"name": "depth", "type": "number", "required": true, "description": "Depth along Z axis"},
+            {"name": "predecessors", "type": "array", "required": true, "description": "Predecessor node IDs"},
+            {"name": "successors", "type": "array", "required": true, "description": "Successor node IDs"}
+          ]
+        }
+      },
+      {
+        "name": "min_gap",
+        "type": "number",
+        "required": false,
+        "description": "Minimum gap between adjacent nodes in meters (default 1.5)",
+        "default": 1.5
+      },
+      {
+        "name": "flow_direction",
+        "type": "string",
+        "required": false,
+        "description": "Primary flow direction: 'x' or 'z' (default 'x')",
+        "default": "x"
+      }
+    ],
+    "description": "Layout nodes with positions, sizes, DAG relationships, and compaction parameters"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "compacted_nodes",
+        "type": "array",
+        "description": "Nodes with original and compacted positions",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "node_id", "type": "string", "description": "Node identifier"},
+            {"name": "name", "type": "string", "description": "Node name"},
+            {"name": "original_x", "type": "number", "description": "Original X position"},
+            {"name": "original_z", "type": "number", "description": "Original Z position"},
+            {"name": "new_x", "type": "number", "description": "Compacted X position"},
+            {"name": "new_z", "type": "number", "description": "Compacted Z position"},
+            {"name": "shifted", "type": "boolean", "description": "Whether this node was moved"}
+          ]
+        }
+      },
+      {"name": "total_original_span", "type": "number", "description": "Total span of original layout along flow direction"},
+      {"name": "total_compacted_span", "type": "number", "description": "Total span after compaction"},
+      {"name": "reduction_pct", "type": "number", "description": "Percentage reduction in span"}
+    ],
+    "description": "Compacted layout with original vs new positions and span reduction metrics"
+  },
+  "params_schema": [
+    {
+      "name": "min_gap",
+      "type": "number",
+      "default": 1.5,
+      "description": "Minimum gap in meters between adjacent process stations"
+    },
+    {
+      "name": "flow_direction",
+      "type": "string",
+      "default": "x",
+      "enum": ["x", "z"],
+      "description": "Primary flow direction for compaction"
+    }
+  ],
+  "example_input": {
+    "layout_nodes": [
+      {"node_id": "P1", "name": "Frame Assembly", "x": 0.0, "y": 0.0, "z": 0.0, "width": 3.0, "depth": 2.0, "predecessors": [], "successors": ["P2"]},
+      {"node_id": "P2", "name": "Welding Station", "x": 10.0, "y": 0.0, "z": 0.0, "width": 4.0, "depth": 3.0, "predecessors": ["P1"], "successors": ["P3"]},
+      {"node_id": "P3", "name": "Painting Booth", "x": 22.0, "y": 0.0, "z": 0.0, "width": 5.0, "depth": 4.0, "predecessors": ["P2"], "successors": ["P4"]},
+      {"node_id": "P4", "name": "Quality Check", "x": 35.0, "y": 0.0, "z": 0.0, "width": 2.0, "depth": 2.0, "predecessors": ["P3"], "successors": []}
+    ],
+    "min_gap": 1.5,
+    "flow_direction": "x"
+  },
+  "example_output": {
+    "compacted_nodes": [
+      {
+        "node_id": "P1",
+        "name": "Frame Assembly",
+        "original_x": 0.0,
+        "original_z": 0.0,
+        "new_x": 0.0,
+        "new_z": 0.0,
+        "shifted": false
+      },
+      {
+        "node_id": "P2",
+        "name": "Welding Station",
+        "original_x": 10.0,
+        "original_z": 0.0,
+        "new_x": 4.5,
+        "new_z": 0.0,
+        "shifted": true
+      },
+      {
+        "node_id": "P3",
+        "name": "Painting Booth",
+        "original_x": 22.0,
+        "original_z": 0.0,
+        "new_x": 10.0,
+        "new_z": 0.0,
+        "shifted": true
+      },
+      {
+        "node_id": "P4",
+        "name": "Quality Check",
+        "original_x": 35.0,
+        "original_z": 0.0,
+        "new_x": 16.5,
+        "new_z": 0.0,
+        "shifted": true
+      }
+    ],
+    "total_original_span": 37.0,
+    "total_compacted_span": 18.5,
+    "reduction_pct": 50.0
+  }
+}

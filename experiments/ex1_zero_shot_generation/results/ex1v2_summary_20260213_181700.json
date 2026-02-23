@@ -1,0 +1,52 @@
+{
+  "experiment": "Ex1 v2 Zero-shot BOP Generation",
+  "dataset_version": "2.0",
+  "timestamp": "2026-02-13T18:59:02.082866",
+  "config": {
+    "temperature": 0.0,
+    "similarity_threshold": 0.4,
+    "prompt_source": "app/prompts.py SYSTEM_PROMPT"
+  },
+  "model_averages": {
+    "Gemini 2.5 Flash": {
+      "avg_accuracy": 0.8587,
+      "avg_sequence_match": 0.7951,
+      "avg_generated_count": 9.4,
+      "avg_latency_sec": 41.67,
+      "success_rate": 1.0,
+      "products_tested": 10
+    },
+    "GPT-5 Mini": {
+      "avg_accuracy": 0.726,
+      "avg_sequence_match": 0.7899,
+      "avg_generated_count": 9.2,
+      "avg_latency_sec": 56.03,
+      "success_rate": 1.0,
+      "products_tested": 10
+    },
+    "Claude Sonnet 4.5": {
+      "avg_accuracy": 0.7442,
+      "avg_sequence_match": 0.9364,
+      "avg_generated_count": 11.0,
+      "avg_latency_sec": 51.78,
+      "success_rate": 1.0,
+      "products_tested": 10
+    },
+    "Gemini 2.5 Pro": {
+      "avg_accuracy": 0.7841,
+      "avg_sequence_match": 0.8245,
+      "avg_generated_count": 9.1,
+      "avg_latency_sec": 51.85,
+      "success_rate": 1.0,
+      "products_tested": 10
+    },
+    "GPT-5.2": {
+      "avg_accuracy": 0.7171,
+      "avg_sequence_match": 0.8417,
+      "avg_generated_count": 12.9,
+      "avg_latency_sec": 74.13,
+      "success_rate": 1.0,
+      "products_tested": 10
+    }
+  }
+}

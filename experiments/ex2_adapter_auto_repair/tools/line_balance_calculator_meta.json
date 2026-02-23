@@ -1,0 +1,79 @@
+{
+  "tool_id": "line_balance_calculator",
+  "tool_name": "Line Balance Calculator",
+  "description": "Calculates line balance efficiency by comparing effective cycle times across processes against the takt time. Identifies underutilized and overloaded processes.",
+  "execution_type": "python",
+  "file_name": "line_balance_calculator.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "process_details",
+        "type": "array",
+        "required": true,
+        "description": "Array of process detail objects with parallel station information",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Unique identifier for the process"},
+            {"name": "parallel_index", "type": "integer", "description": "Index of parallel station (0-based)"},
+            {"name": "cycle_time_sec", "type": "number", "description": "Cycle time in seconds"},
+            {"name": "name", "type": "string", "description": "Display name of the process"}
+          ]
+        }
+      },
+      {
+        "name": "target_uph",
+        "type": "number",
+        "required": true,
+        "description": "Target units per hour"
+      }
+    ],
+    "description": "Process details with cycle times and parallel station info, plus the target UPH"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {"name": "line_balance_rate", "type": "number", "description": "Line balance efficiency percentage (0-100)"},
+      {"name": "takt_time_sec", "type": "number", "description": "Takt time in seconds (3600/target_uph)"},
+      {"name": "process_times", "type": "array", "description": "Per-process breakdown with effective cycle time and utilization"},
+      {"name": "total_effective_time_sec", "type": "number", "description": "Sum of all effective cycle times"},
+      {"name": "total_idle_time_sec", "type": "number", "description": "Sum of idle times across all processes"},
+      {"name": "num_processes", "type": "integer", "description": "Number of unique processes"},
+      {"name": "target_uph", "type": "number", "description": "Target UPH from input"},
+      {"name": "suggestions", "type": "array", "description": "Improvement suggestions"}
+    ],
+    "description": "Line balance analysis results with per-process utilization and suggestions"
+  },
+  "params_schema": [],
+  "example_input": {
+    "process_details": [
+      {"process_id": "P001", "parallel_index": 0, "cycle_time_sec": 65.0, "name": "Frame Assembly"},
+      {"process_id": "P001", "parallel_index": 1, "cycle_time_sec": 67.0, "name": "Frame Assembly"},
+      {"process_id": "P002", "parallel_index": 0, "cycle_time_sec": 58.0, "name": "Welding"},
+      {"process_id": "P003", "parallel_index": 0, "cycle_time_sec": 52.0, "name": "Painting"},
+      {"process_id": "P004", "parallel_index": 0, "cycle_time_sec": 25.0, "name": "Quality Inspection"},
+      {"process_id": "P005", "parallel_index": 0, "cycle_time_sec": 40.0, "name": "Packaging"}
+    ],
+    "target_uph": 60
+  },
+  "example_output": {
+    "line_balance_rate": 71.9,
+    "takt_time_sec": 60.0,
+    "process_times": [
+      {"process_id": "P002", "name": "Welding", "parallel_count": 1, "max_cycle_time_sec": 58.0, "effective_cycle_time_sec": 58.0, "utilization_pct": 96.67, "idle_time_sec": 2.0},
+      {"process_id": "P003", "name": "Painting", "parallel_count": 1, "max_cycle_time_sec": 52.0, "effective_cycle_time_sec": 52.0, "utilization_pct": 86.67, "idle_time_sec": 8.0},
+      {"process_id": "P005", "name": "Packaging", "parallel_count": 1, "max_cycle_time_sec": 40.0, "effective_cycle_time_sec": 40.0, "utilization_pct": 66.67, "idle_time_sec": 20.0},
+      {"process_id": "P001", "name": "Frame Assembly", "parallel_count": 2, "max_cycle_time_sec": 67.0, "effective_cycle_time_sec": 33.5, "utilization_pct": 55.83, "idle_time_sec": 26.5},
+      {"process_id": "P004", "name": "Quality Inspection", "parallel_count": 1, "max_cycle_time_sec": 25.0, "effective_cycle_time_sec": 25.0, "utilization_pct": 41.67, "idle_time_sec": 35.0}
+    ],
+    "total_effective_time_sec": 208.5,
+    "total_idle_time_sec": 91.5,
+    "num_processes": 5,
+    "target_uph": 60,
+    "suggestions": [
+      "Line balance rate is moderate (71.9%). There is room for improvement.",
+      "Process 'Quality Inspection' has low utilization (41.67%). Consider merging with adjacent process or adding work content."
+    ]
+  }
+}

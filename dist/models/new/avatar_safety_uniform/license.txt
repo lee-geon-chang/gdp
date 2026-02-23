@@ -1,0 +1,11 @@
+Model Information:
+* title:	Avatar Safety Uniform
+* source:	https://sketchfab.com/3d-models/avatar-safety-uniform-11988638b3104689ab1f4275598f6ff2
+* author:	Nyayata (https://sketchfab.com/Nyayata)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Avatar Safety Uniform" (https://sketchfab.com/3d-models/avatar-safety-uniform-11988638b3104689ab1f4275598f6ff2) by Nyayata (https://sketchfab.com/Nyayata) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
