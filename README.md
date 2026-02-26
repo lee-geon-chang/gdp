@@ -1,9 +1,11 @@
 # GDP (Generative Digital-twin Prototyper)
 
+[English](README.md) | [한국어](README_KR.md)
+
 An LLM-based framework for automated manufacturing process design and analysis tool integration.
 
 <p align="center">
-  <img src="docs/fig1.png" alt="GDP System Architecture" width="700">
+  <img src="fig1.png" alt="GDP System Architecture" width="700">
 </p>
 
 GDP enables users — even those without deep manufacturing expertise — to design production line processes (Bill of Process) through natural language interaction with large language models, and automatically integrates analysis tools via an **Auto-Repair** mechanism that self-corrects generated code upon runtime errors.
@@ -24,7 +26,7 @@ GDP enables users — even those without deep manufacturing expertise — to des
 
 - Python 3.10+
 - Node.js 18+
-- At least one LLM API key (Gemini or OpenAI)
+- At least one LLM API key (Gemini, OpenAI, or Anthropic)
 
 ### Installation
 
@@ -58,6 +60,51 @@ npm run dev
 
 Open http://localhost:5173 in your browser. The pre-built frontend is also available in `dist/` for static serving.
 
+## Usage Guide
+
+### Manual Process Design
+
+1. **Master Table Setup**
+   - **Equipment tab**: Click "+ Add" to register equipment (robot / machine / manual_station)
+   - **Workers tab**: Click "+ Add" to register workers and set skill levels
+   - **Materials tab**: Click "+ Add" to register materials and units
+
+2. **Process Creation & Resource Mapping**
+   - **BOP tab**: Click "+ Add Process" to create a new process step
+   - Click a process row to expand it, then assign resources (equipment / workers / materials) from the dropdown menus
+   - Set Predecessor / Successor to define process order
+   - Use "Parallel Line" to configure parallel process branches
+
+3. **3D Layout Manipulation**
+   - Left-click drag: Rotate camera
+   - Right-click drag: Pan camera
+   - Scroll: Zoom in/out
+   - Click an object, then:
+     - **T** key: Translate mode (drag axis arrows)
+     - **R** key: Rotate mode (drag the red ring, snaps to 5 degree increments)
+     - **S** key: Scale mode
+
+### AI-Assisted Design
+
+- Open the **AI Assistant** panel and type a natural language request
+- Example: *"Create a 6-step bicycle assembly BOP"*
+- The LLM generates processes, equipment, workers, and materials automatically
+- Fine-tune the generated result using manual editing
+
+### Tool Integration
+
+- Navigate to the **Tools** tab to manage analysis tools
+- **Upload**: Upload an existing Python script — an adapter is generated automatically
+- **AI Generate**: Describe an analysis tool in natural language to have it created
+- **Execute**: Configure parameters and click Execute — results are reflected in the BOP
+- **Auto-Repair**: If execution fails, the system automatically repairs the adapter and retries
+
+### Import / Export
+
+- Use the **Scenarios** tab for data management
+- Export / import BOP data in JSON or Excel format
+- Save, load, and compare multiple scenarios
+
 ## Project Structure
 
 ```
@@ -81,8 +128,7 @@ gdp/
 │   ├── ex1_zero_shot_generation/ # Experiment 1: Zero-shot BOP generation
 │   ├── ex2_adapter_auto_repair/  # Experiment 2: Adapter auto-repair
 │   └── ex3_design_efficiency/    # Experiment 3: Design efficiency (planned)
-├── tests/                        # Test suite
-└── docs/                         # Paper and figures
+└── tests/                        # Test suite
 ```
 
 ## Experiments
@@ -91,21 +137,21 @@ This repository includes the experiment code and results from the accompanying p
 
 ### Experiment 1: Zero-Shot BOP Generation
 
-Evaluates how accurately LLMs can generate complete process structures from only a product name. Five LLMs are compared across five product categories using N:M coverage matching against human-curated ground truth.
+Evaluates how accurately LLMs can generate complete process structures from only a product name. Five LLMs are compared across ten product categories using N:M coverage matching against human-curated ground truth.
 
-→ [experiments/ex1_zero_shot_generation/](experiments/ex1_zero_shot_generation/)
+> [experiments/ex1_zero_shot_generation/](experiments/ex1_zero_shot_generation/)
 
 ### Experiment 2: Adapter Auto-Repair
 
 Measures the effectiveness of iterative self-repair for LLM-generated tool adapters. 320 runs across 10 tools and 8 BOP scenarios, comparing Pass@1 baseline against Pass@k with up to 3 repair iterations.
 
-→ [experiments/ex2_adapter_auto_repair/](experiments/ex2_adapter_auto_repair/)
+> [experiments/ex2_adapter_auto_repair/](experiments/ex2_adapter_auto_repair/)
 
 ### Experiment 3: Design Efficiency
 
 Planned evaluation of overall design time reduction when using GDP versus manual BOP design.
 
-→ [experiments/ex3_design_efficiency/](experiments/ex3_design_efficiency/)
+> [experiments/ex3_design_efficiency/](experiments/ex3_design_efficiency/)
 
 ## 3D Asset Licenses
 
