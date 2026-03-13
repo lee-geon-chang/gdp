@@ -27,7 +27,7 @@ An LLM-based framework for automated manufacturing process design and analysis t
 ### Installation
 
 ```bash
-git clone https://github.com/lee-geon-chang/gdp.git
+git clone https://anonymous.4open.science/r/gdp-0D5D.git
 cd gdp
 pip install -r requirements.txt
 npm install
@@ -180,10 +180,10 @@ This project uses 3D models under CC0 1.0 / public domain licenses.
 ## Citation
 
 ```bibtex
-@inproceedings{lee2026gdp,
+@inproceedings{anonymous2026gdp,
   title     = {GDP (Generative Digital-twin Prototyper): An LLM-Based Framework
                for Automated Process Design and Analysis Tool Integration},
-  author    = {Lee, Geonchang and Woo, Honguk},
+  author    = {Anonymous},
   booktitle = {Proc. IEEE Int. Conf. Autom. Sci. Eng. (CASE)},
   year      = {2026}
 }
