@@ -1,0 +1,159 @@
+{
+  "tool_id": "takt_time_optimizer",
+  "tool_name": "Takt Time Optimizer",
+  "description": "Optimize parallel station counts to meet a target UPH (Units Per Hour). Calculates the minimum number of parallel stations needed for each process based on cycle time and takt time. Supports 'minimize_total' (minimum stations) and 'balance' (equalize utilization) modes.",
+  "execution_type": "python",
+  "file_name": "takt_time_optimizer.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "process_graph",
+        "type": "object",
+        "required": true,
+        "description": "Process DAG with nodes and edges",
+        "fields": [
+          {
+            "name": "nodes",
+            "type": "array",
+            "required": true,
+            "description": "Process nodes with cycle time and current parallel count",
+            "items": {
+              "type": "object",
+              "fields": [
+                {"name": "process_id", "type": "string", "required": true, "description": "Unique process identifier"},
+                {"name": "name", "type": "string", "required": true, "description": "Process display name"},
+                {"name": "cycle_time_sec", "type": "number", "required": true, "description": "Cycle time in seconds"},
+                {"name": "current_parallel_count", "type": "integer", "required": true, "description": "Current number of parallel stations"}
+              ]
+            }
+          },
+          {
+            "name": "edges",
+            "type": "array",
+            "required": true,
+            "description": "Directed edges between processes",
+            "items": {
+              "type": "object",
+              "fields": [
+                {"name": "from_id", "type": "string", "required": true, "description": "Source process ID"},
+                {"name": "to_id", "type": "string", "required": true, "description": "Target process ID"}
+              ]
+            }
+          }
+        ]
+      },
+      {"name": "target_uph", "type": "number", "required": true, "description": "Target Units Per Hour"},
+      {"name": "max_parallel_per_process", "type": "integer", "required": false, "description": "Maximum parallel stations per process (default 4)", "default": 4},
+      {"name": "optimization_mode", "type": "string", "required": false, "description": "Optimization strategy: 'minimize_total' or 'balance' (default 'minimize_total')", "default": "minimize_total"}
+    ],
+    "description": "Process graph with cycle times, target UPH, and optimization parameters"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "optimized_processes",
+        "type": "array",
+        "description": "Per-process optimization results",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process identifier"},
+            {"name": "name", "type": "string", "description": "Process name"},
+            {"name": "original_parallel", "type": "integer", "description": "Original parallel count"},
+            {"name": "recommended_parallel", "type": "integer", "description": "Recommended parallel count"},
+            {"name": "original_effective_time", "type": "number", "description": "Original effective cycle time (sec)"},
+            {"name": "new_effective_time", "type": "number", "description": "New effective cycle time after optimization (sec)"}
+          ]
+        }
+      },
+      {"name": "achieved_uph", "type": "number", "description": "UPH achievable after optimization"},
+      {"name": "target_uph", "type": "number", "description": "Requested target UPH"},
+      {"name": "improvement_pct", "type": "number", "description": "UPH improvement percentage"},
+      {"name": "total_parallel_added", "type": "integer", "description": "Total number of parallel stations added"},
+      {"name": "bottleneck_after", "type": "string", "description": "Process ID of the bottleneck after optimization"}
+    ],
+    "description": "Optimization results with recommended parallel counts and achievable UPH"
+  },
+  "params_schema": [
+    {
+      "name": "target_uph",
+      "type": "number",
+      "required": true,
+      "description": "Target Units Per Hour to achieve"
+    },
+    {
+      "name": "max_parallel_per_process",
+      "type": "integer",
+      "default": 4,
+      "description": "Maximum number of parallel stations allowed per process"
+    },
+    {
+      "name": "optimization_mode",
+      "type": "string",
+      "default": "minimize_total",
+      "enum": ["minimize_total", "balance"],
+      "description": "Optimization strategy: minimize_total uses minimum stations, balance equalizes utilization"
+    }
+  ],
+  "example_input": {
+    "process_graph": {
+      "nodes": [
+        {"process_id": "P1", "name": "Frame Assembly", "cycle_time_sec": 45.0, "current_parallel_count": 1},
+        {"process_id": "P2", "name": "Welding", "cycle_time_sec": 120.0, "current_parallel_count": 1},
+        {"process_id": "P3", "name": "Painting", "cycle_time_sec": 90.0, "current_parallel_count": 1},
+        {"process_id": "P4", "name": "Quality Check", "cycle_time_sec": 30.0, "current_parallel_count": 1}
+      ],
+      "edges": [
+        {"from_id": "P1", "to_id": "P2"},
+        {"from_id": "P2", "to_id": "P3"},
+        {"from_id": "P3", "to_id": "P4"}
+      ]
+    },
+    "target_uph": 60,
+    "max_parallel_per_process": 4,
+    "optimization_mode": "minimize_total"
+  },
+  "example_output": {
+    "optimized_processes": [
+      {
+        "process_id": "P1",
+        "name": "Frame Assembly",
+        "original_parallel": 1,
+        "recommended_parallel": 1,
+        "original_effective_time": 45.0,
+        "new_effective_time": 45.0
+      },
+      {
+        "process_id": "P2",
+        "name": "Welding",
+        "original_parallel": 1,
+        "recommended_parallel": 2,
+        "original_effective_time": 120.0,
+        "new_effective_time": 60.0
+      },
+      {
+        "process_id": "P3",
+        "name": "Painting",
+        "original_parallel": 1,
+        "recommended_parallel": 2,
+        "original_effective_time": 90.0,
+        "new_effective_time": 45.0
+      },
+      {
+        "process_id": "P4",
+        "name": "Quality Check",
+        "original_parallel": 1,
+        "recommended_parallel": 1,
+        "original_effective_time": 30.0,
+        "new_effective_time": 30.0
+      }
+    ],
+    "achieved_uph": 60.0,
+    "target_uph": 60,
+    "improvement_pct": 100.0,
+    "total_parallel_added": 2,
+    "bottleneck_after": "P2"
+  }
+}

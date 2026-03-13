@@ -1,0 +1,18 @@
+{
+  "cycle_times": {
+    "P001": 45,
+    "P002": 95,
+    "P003": 120,
+    "P004": 60,
+    "P005": 75
+  },
+  "target_takt_time": 60.0,
+  "bottleneck_process": {
+    "process_id": "P003",
+    "cycle_time": 120
+  },
+  "improvement_suggestion": {
+    "process_id": "P003",
+    "required_parallel_lines": 2
+  }
+}

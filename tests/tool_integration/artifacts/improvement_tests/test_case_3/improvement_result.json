@@ -1,0 +1,10 @@
+{
+  "explanation": "스크립트 코드에서 total cycle time을 계산하는 로직에 오류가 있었습니다. 기존에는 각 parallel_line의 cycle_time을 total 변수에 덮어쓰는 방식으로 되어 있어, 마지막 parallel_line의 cycle_time만 total에 저장되었습니다. 이를 수정하여 모든 parallel_line의 cycle_time을 누적하여 합산하도록 += 연산자를 사용하도록 변경했습니다. 이렇게 함으로써 전체 사이클 타임을 정확하게 계산할 수 있습니다.",
+  "changes_summary": [
+    "스크립트 코드 수정: total cycle time 계산 로직 수정 (+= 연산자 사용)"
+  ],
+  "pre_process_code": null,
+  "post_process_code": null,
+  "params_schema": null,
+  "script_code": "\"\"\"Total Cycle Calculator - HAS BUG\"\"\"\nimport json\nimport argparse\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--input', '-i', required=True)\n    parser.add_argument('--output', '-o', required=True)\n    args = parser.parse_args()\n\n    with open(args.input, 'r', encoding='utf-8') as f:\n        data = json.load(f)\n\n    total = 0\n    for proc in data.get(\"processes\", []):\n        for line in proc.get(\"parallel_lines\", []):\n            total += line.get(\"cycle_time_sec\", 0)  # 버그 수정: += 사용\n\n    result = {\n        \"total_cycle_time\": total,\n        \"process_count\": len(data.get(\"processes\", []))\n    }\n\n    with open(args.output, 'w', encoding='utf-8') as f:\n        json.dump(result, f, indent=2)\n\n    print(f\"[Success] Total: {total}\")\n\nif __name__ == \"__main__\":\n    main()\n"
+}

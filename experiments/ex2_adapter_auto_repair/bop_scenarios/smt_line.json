@@ -1,0 +1,364 @@
+{
+  "project_title": "SMT PCB 조립 라인",
+  "target_uph": 120,
+  "processes": [
+    {
+      "process_id": "P001",
+      "predecessor_ids": [],
+      "successor_ids": ["P002"]
+    },
+    {
+      "process_id": "P002",
+      "predecessor_ids": ["P001"],
+      "successor_ids": ["P003"]
+    },
+    {
+      "process_id": "P003",
+      "predecessor_ids": ["P002"],
+      "successor_ids": ["P004"]
+    },
+    {
+      "process_id": "P004",
+      "predecessor_ids": ["P003"],
+      "successor_ids": ["P005"]
+    },
+    {
+      "process_id": "P005",
+      "predecessor_ids": ["P004"],
+      "successor_ids": ["P006"]
+    },
+    {
+      "process_id": "P006",
+      "predecessor_ids": ["P005"],
+      "successor_ids": ["P007"]
+    },
+    {
+      "process_id": "P007",
+      "predecessor_ids": ["P006"],
+      "successor_ids": []
+    }
+  ],
+  "process_details": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "name": "PCB 로딩",
+      "description": "매거진에서 PCB 기판을 컨베이어에 로딩",
+      "cycle_time_sec": 30,
+      "location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 2.5, "height": 2.0, "depth": 2.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "name": "솔더 페이스트 인쇄",
+      "description": "스텐실을 이용한 솔더 페이스트 프린팅",
+      "cycle_time_sec": 45,
+      "location": { "x": 5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.5, "height": 2.5, "depth": 2.5 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "name": "SPI 검사",
+      "description": "솔더 페이스트 인쇄 상태 3D 검사",
+      "cycle_time_sec": 35,
+      "location": { "x": 10, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 2.5, "height": 2.0, "depth": 2.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "name": "부품 배치",
+      "description": "칩마운터를 이용한 SMD 부품 고속 배치",
+      "cycle_time_sec": 60,
+      "location": { "x": 15, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "name": "리플로우 솔더링",
+      "description": "리플로우 오븐을 통한 솔더링 (프리히트-피크-냉각)",
+      "cycle_time_sec": 90,
+      "location": { "x": 20, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 2.5, "depth": 2.5 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "name": "AOI 검사",
+      "description": "자동 광학 검사 - 솔더 불량, 부품 미실장 검출",
+      "cycle_time_sec": 40,
+      "location": { "x": 26, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 2.5, "height": 2.0, "depth": 2.0 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "name": "언로딩",
+      "description": "완성 PCB를 매거진에 적재",
+      "cycle_time_sec": 30,
+      "location": { "x": 31, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 2.5, "height": 2.0, "depth": 2.0 }
+    }
+  ],
+  "resource_assignments": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-LOADER",
+      "quantity": 1,
+      "role": "PCB 로더",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.5, "height": 1.8, "depth": 1.2 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "로딩 오퍼레이터",
+      "relative_location": { "x": 1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-PCB",
+      "quantity": 1,
+      "role": "PCB 기판",
+      "relative_location": { "x": -1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.4, "height": 0.3, "depth": 0.4 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PRINTER",
+      "quantity": 1,
+      "role": "스크린 프린터",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1, "z": 1.2 },
+      "computed_size": { "width": 2.5, "height": 2.2, "depth": 2.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "프린터 오퍼레이터",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-PASTE",
+      "quantity": 0.5,
+      "role": "솔더 페이스트",
+      "relative_location": { "x": -1.0, "y": 0, "z": -0.8 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.3, "height": 0.4, "depth": 0.3 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-SPI",
+      "quantity": 1,
+      "role": "SPI 검사기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 2.0, "height": 2.0, "depth": 1.5 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "SPI 검사원",
+      "relative_location": { "x": 1.2, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-MOUNTER",
+      "quantity": 1,
+      "role": "칩마운터",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1, "z": 1.5 },
+      "computed_size": { "width": 3.0, "height": 2.2, "depth": 2.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "마운터 오퍼레이터",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-SMD",
+      "quantity": 100,
+      "role": "SMD 부품 릴",
+      "relative_location": { "x": -1.5, "y": 0, "z": -1.0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 0.4, "depth": 0.6 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-REFLOW",
+      "quantity": 1,
+      "role": "리플로우 오븐",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2, "y": 1, "z": 1.5 },
+      "computed_size": { "width": 4.0, "height": 2.2, "depth": 2.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "리플로우 오퍼레이터",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-AOI",
+      "quantity": 1,
+      "role": "AOI 검사기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 2.0, "height": 2.0, "depth": 1.5 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "AOI 검사원",
+      "relative_location": { "x": 1.2, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-UNLOADER",
+      "quantity": 1,
+      "role": "PCB 언로더",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.5, "height": 1.8, "depth": 1.2 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "언로딩 오퍼레이터",
+      "relative_location": { "x": 1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    }
+  ],
+  "equipments": [
+    { "equipment_id": "EQ-LOADER", "name": "PCB 로더", "type": "machine" },
+    { "equipment_id": "EQ-PRINTER", "name": "스크린 프린터", "type": "machine" },
+    { "equipment_id": "EQ-SPI", "name": "SPI 3D 검사기", "type": "machine" },
+    { "equipment_id": "EQ-MOUNTER", "name": "고속 칩마운터", "type": "machine" },
+    { "equipment_id": "EQ-REFLOW", "name": "리플로우 오븐", "type": "machine" },
+    { "equipment_id": "EQ-AOI", "name": "AOI 광학 검사기", "type": "machine" },
+    { "equipment_id": "EQ-UNLOADER", "name": "PCB 언로더", "type": "machine" }
+  ],
+  "workers": [
+    { "worker_id": "W001", "name": "정운영", "skill_level": "Senior" },
+    { "worker_id": "W002", "name": "오장비", "skill_level": "Mid" },
+    { "worker_id": "W003", "name": "백검사", "skill_level": "Senior" }
+  ],
+  "materials": [
+    { "material_id": "MAT-PCB", "name": "PCB 기판 (FR-4)", "unit": "ea" },
+    { "material_id": "MAT-PASTE", "name": "솔더 페이스트 (Sn-Ag-Cu)", "unit": "kg" },
+    { "material_id": "MAT-SMD", "name": "SMD 부품 (저항/콘덴서/IC)", "unit": "ea" }
+  ],
+  "obstacles": [
+    {
+      "obstacle_id": "OBS001",
+      "name": "라인 보호 펜스 북측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": -4 },
+      "size": { "width": 37, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS002",
+      "name": "라인 보호 펜스 남측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": 4 },
+      "size": { "width": 37, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS003",
+      "name": "리플로우 고온 경고 구역",
+      "type": "zone",
+      "position": { "x": 18, "y": 0, "z": 0 },
+      "size": { "width": 7.0, "height": 0.05, "depth": 5.0 },
+      "rotation_y": 0
+    }
+  ]
+}

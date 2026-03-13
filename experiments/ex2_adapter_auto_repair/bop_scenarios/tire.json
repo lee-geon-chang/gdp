@@ -1,0 +1,372 @@
+{
+  "project_title": "타이어 제조 라인",
+  "target_uph": 45,
+  "processes": [
+    {
+      "process_id": "P001",
+      "predecessor_ids": [],
+      "successor_ids": ["P002"]
+    },
+    {
+      "process_id": "P002",
+      "predecessor_ids": ["P001"],
+      "successor_ids": ["P003"]
+    },
+    {
+      "process_id": "P003",
+      "predecessor_ids": ["P002"],
+      "successor_ids": ["P004"]
+    },
+    {
+      "process_id": "P004",
+      "predecessor_ids": ["P003"],
+      "successor_ids": ["P005"]
+    },
+    {
+      "process_id": "P005",
+      "predecessor_ids": ["P004"],
+      "successor_ids": ["P006"]
+    },
+    {
+      "process_id": "P006",
+      "predecessor_ids": ["P005"],
+      "successor_ids": ["P007"]
+    },
+    {
+      "process_id": "P007",
+      "predecessor_ids": ["P006"],
+      "successor_ids": []
+    }
+  ],
+  "process_details": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "name": "고무 배합",
+      "description": "천연고무, 합성고무, 카본블랙, 가황제 등 원재료 배합",
+      "cycle_time_sec": 180,
+      "location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.5, "depth": 4.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "name": "압출",
+      "description": "배합 고무를 트레드, 사이드월 형상으로 압출",
+      "cycle_time_sec": 120,
+      "location": { "x": 7, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "name": "재단",
+      "description": "코드지, 고무시트를 규격에 맞게 재단",
+      "cycle_time_sec": 60,
+      "location": { "x": 13, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "name": "성형",
+      "description": "타이어 드럼에서 카커스, 비드, 벨트, 트레드 적층 성형",
+      "cycle_time_sec": 150,
+      "location": { "x": 19, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "name": "가류",
+      "description": "가류 프레스에서 고온/고압으로 가황 처리 (트레드 패턴 형성)",
+      "cycle_time_sec": 180,
+      "location": { "x": 26, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.5, "depth": 4.0 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "name": "트리밍",
+      "description": "가류 후 스프루, 버 제거 및 표면 다듬기",
+      "cycle_time_sec": 45,
+      "location": { "x": 33, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "name": "최종 검사",
+      "description": "외관 검사, 유니포미티 측정, X-ray 내부 결함 검사",
+      "cycle_time_sec": 90,
+      "location": { "x": 38, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 2.5, "depth": 4.0 }
+    }
+  ],
+  "resource_assignments": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-MIXER",
+      "quantity": 1,
+      "role": "밴버리 믹서",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2, "y": 1.5, "z": 2 },
+      "computed_size": { "width": 4.0, "height": 3.2, "depth": 3.5 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "배합 기술자",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-RUBBER",
+      "quantity": 15,
+      "role": "원료 고무",
+      "relative_location": { "x": -2.0, "y": 0, "z": -1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.0, "height": 1.0, "depth": 1.0 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-CARBON",
+      "quantity": 5,
+      "role": "카본블랙",
+      "relative_location": { "x": -2.0, "y": 0, "z": 1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 1.0, "depth": 0.8 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-EXTRUDER",
+      "quantity": 1,
+      "role": "압출기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1, "z": 1 },
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "압출 오퍼레이터",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-CUTTER",
+      "quantity": 1,
+      "role": "재단기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1, "z": 1.2 },
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 2.5 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "재단 오퍼레이터",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-BUILDING",
+      "quantity": 1,
+      "role": "타이어 성형 드럼",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 3.5, "height": 2.8, "depth": 3.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "성형 기술자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-BEAD",
+      "quantity": 2,
+      "role": "비드 와이어",
+      "relative_location": { "x": -2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 0.8, "depth": 0.3 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-CURING",
+      "quantity": 1,
+      "role": "가류 프레스",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2, "y": 1.5, "z": 2 },
+      "computed_size": { "width": 4.0, "height": 3.5, "depth": 3.5 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "가류 기술자",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-TRIMMER",
+      "quantity": 1,
+      "role": "트리밍 머신",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 2.0, "height": 2.0, "depth": 2.0 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "트리밍 오퍼레이터",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-UNIFORMITY",
+      "quantity": 1,
+      "role": "유니포미티 검사기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1, "z": 1.5 },
+      "computed_size": { "width": 3.0, "height": 2.2, "depth": 3.0 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "품질 검사원",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    }
+  ],
+  "equipments": [
+    { "equipment_id": "EQ-MIXER", "name": "밴버리 믹서", "type": "machine" },
+    { "equipment_id": "EQ-EXTRUDER", "name": "고무 압출기", "type": "machine" },
+    { "equipment_id": "EQ-CUTTER", "name": "재단기", "type": "machine" },
+    { "equipment_id": "EQ-BUILDING", "name": "타이어 성형 드럼", "type": "machine" },
+    { "equipment_id": "EQ-CURING", "name": "가류 프레스", "type": "machine" },
+    { "equipment_id": "EQ-TRIMMER", "name": "트리밍 머신", "type": "machine" },
+    { "equipment_id": "EQ-UNIFORMITY", "name": "유니포미티 검사기", "type": "machine" }
+  ],
+  "workers": [
+    { "worker_id": "W001", "name": "김배합", "skill_level": "Senior" },
+    { "worker_id": "W002", "name": "이운영", "skill_level": "Mid" },
+    { "worker_id": "W003", "name": "박성형", "skill_level": "Senior" }
+  ],
+  "materials": [
+    { "material_id": "MAT-RUBBER", "name": "천연/합성 고무", "unit": "kg" },
+    { "material_id": "MAT-CARBON", "name": "카본블랙", "unit": "kg" },
+    { "material_id": "MAT-BEAD", "name": "비드 와이어", "unit": "ea" }
+  ],
+  "obstacles": [
+    {
+      "obstacle_id": "OBS001",
+      "name": "공장 외벽 북측",
+      "type": "wall",
+      "position": { "x": -3, "y": 0, "z": -7 },
+      "size": { "width": 46, "height": 4.0, "depth": 0.3 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS002",
+      "name": "공장 외벽 남측",
+      "type": "wall",
+      "position": { "x": -3, "y": 0, "z": 7 },
+      "size": { "width": 46, "height": 4.0, "depth": 0.3 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS003",
+      "name": "가류 고온 구역",
+      "type": "zone",
+      "position": { "x": 24, "y": 0, "z": 0 },
+      "size": { "width": 8.0, "height": 0.05, "depth": 6.0 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS004",
+      "name": "구조 기둥",
+      "type": "pillar",
+      "position": { "x": 19, "y": 0, "z": -6 },
+      "size": { "width": 0.6, "height": 5.0, "depth": 0.6 },
+      "rotation_y": 0
+    }
+  ]
+}

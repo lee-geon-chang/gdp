@@ -1,0 +1,1717 @@
+import { useState, useEffect, useRef } from 'react';
+import useBopStore from '../store/bopStore';
+import { api } from '../services/api';
+
+function ToolsPanel() {
+  const {
+    exportBopData,
+    setBopData,
+    addMessage,
+    normalizeAllProcesses,
+  } = useBopStore();
+
+  // Navigation
+  const [view, setView] = useState('main'); // 'main' | 'upload' | 'detail' | 'generate'
+
+  // Tool list
+  const [tools, setTools] = useState([]);
+  const [listLoading, setListLoading] = useState(false);
+
+  // Upload & Analysis
+  const [uploadedCode, setUploadedCode] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [registering, setRegistering] = useState(false);
+  const [useSchemaOverride, setUseSchemaOverride] = useState(false);
+  const [schemaOverride, setSchemaOverride] = useState({ input: null, output: null });
+
+  // Script Update
+  const [uploadingScript, setUploadingScript] = useState(false);
+  const [scriptUpdateCode, setScriptUpdateCode] = useState('');
+  const [scriptUpdateFileName, setScriptUpdateFileName] = useState('');
+
+  // AI Script Generation (2-step process)
+  const [genDescription, setGenDescription] = useState('');
+  const [generatingSchema, setGeneratingSchema] = useState(false);
+  const [generatedSchema, setGeneratedSchema] = useState(null); // Step 1 result
+  const [editedInputSchema, setEditedInputSchema] = useState(null);
+  const [editedOutputSchema, setEditedOutputSchema] = useState(null);
+  const [editedParams, setEditedParams] = useState([]);
+  const [generating, setGenerating] = useState(false);
+  const [generatedResult, setGeneratedResult] = useState(null); // Step 2 result
+  const [editedCode, setEditedCode] = useState('');
+
+  // Detail
+  const [selectedTool, setSelectedTool] = useState(null);
+  const [toolDetail, setToolDetail] = useState(null);  // 어댑터 코드 포함 상세 정보
+  const [executing, setExecuting] = useState(false);
+  const [execResult, setExecResult] = useState(null);
+  const [toolParams, setToolParams] = useState({});
+  const [pendingResult, setPendingResult] = useState(null);
+  const [originalBop, setOriginalBop] = useState(null);
+  const [bopChanges, setBopChanges] = useState(null);
+
+  // AI Improvement
+  const [showImprove, setShowImprove] = useState(false);
+  const [improveFeedback, setImproveFeedback] = useState('');
+  const [improveScope, setImproveScope] = useState({ adapter: true, params: true, script: false });
+  const [improving, setImproving] = useState(false);
+  const [improveResult, setImproveResult] = useState(null);
+  const [applying, setApplying] = useState(false);
+
+  // Error
+  const [error, setError] = useState('');
+
+  // 다중 선택
+  const [selectedToolIds, setSelectedToolIds] = useState([]);
+
+  const fileInputRef = useRef(null);
+
+  // 다음 버전 번호 계산
+  const getNextVersionLabel = (toolId) => {
+    if (!toolId) return 'v2';
+    // _v3, _v2 등에서 버전 번호 추출
+    const match = toolId.match(/_v(\d+)$/);
+    if (match) {
+      const currentVersion = parseInt(match[1], 10);
+      return `v${currentVersion + 1}`;
+    }
+    return 'v2';  // 버전이 없으면 v2
+  };
+
+  // BOP 변경 사항 계산
+  const computeBopChanges = (original, updated) => {
+    if (!original || !updated) return null;
+
+    const changes = [];
+    const fieldNames = {
+      processes: '공정',
+      equipments: '설비',
+      workers: '작업자',
+      materials: '자재',
+      obstacles: '장애물'
+    };
+
+    // 배열 비교 (processes, equipments, workers, materials, obstacles)
+    const arrayFields = ['processes', 'equipments', 'workers', 'materials', 'obstacles'];
+    arrayFields.forEach(field => {
+      const origArr = original[field] || [];
+      const updArr = updated[field] || [];
+
+      const added = updArr.length - origArr.length;
+      if (added > 0) {
+        changes.push({ type: 'add', field: fieldNames[field] || field, count: added });
+      } else if (added < 0) {
+        changes.push({ type: 'remove', field: fieldNames[field] || field, count: -added });
+      }
+
+      // 기존 항목 수정 체크 (ID 기반 비교)
+      if (field === 'processes') {
+        // 공정: ID로 매칭하여 비교
+        let modified = 0;
+        const modifiedDetails = [];
+        origArr.forEach(origProc => {
+          const updProc = updArr.find(p => p.process_id === origProc.process_id);
+          if (updProc && JSON.stringify(origProc) !== JSON.stringify(updProc)) {
+            modified++;
+            // parallel_count 변경 감지
+            if (origProc.parallel_count !== updProc.parallel_count) {
+              modifiedDetails.push(`${origProc.name}: 병렬 ${origProc.parallel_count || 1} → ${updProc.parallel_count || 1}`);
+            }
+            // cycle_time 변경 감지
+            if (origProc.cycle_time_sec !== updProc.cycle_time_sec) {
+              modifiedDetails.push(`${origProc.name}: CT ${origProc.cycle_time_sec}s → ${updProc.cycle_time_sec}s`);
+            }
+          }
+        });
+        if (modified > 0) {
+          changes.push({
+            type: 'modify',
+            field: fieldNames[field],
+            count: modified,
+            details: modifiedDetails.length > 0 ? modifiedDetails : null
+          });
+        }
+      } else {
+        // 다른 필드: 순서대로 비교
+        const minLen = Math.min(origArr.length, updArr.length);
+        let modified = 0;
+        for (let i = 0; i < minLen; i++) {
+          if (JSON.stringify(origArr[i]) !== JSON.stringify(updArr[i])) {
+            modified++;
+          }
+        }
+        if (modified > 0) {
+          changes.push({ type: 'modify', field: fieldNames[field] || field, count: modified });
+        }
+      }
+    });
+
+    // 스칼라 필드 비교
+    const scalarFields = ['project_title', 'target_uph'];
+    scalarFields.forEach(field => {
+      if (original[field] !== updated[field]) {
+        const scalarNames = { project_title: '프로젝트명', target_uph: '목표 UPH' };
+        changes.push({ type: 'modify', field: scalarNames[field] || field, count: 1 });
+      }
+    });
+
+    return changes.length > 0 ? changes : null;
+  };
+
+  // Load tools on mount
+  useEffect(() => {
+    if (view === 'main') loadTools();
+  }, [view]);
+
+  const loadTools = async () => {
+    setListLoading(true);
+    try {
+      const list = await api.listTools();
+      setTools(list);
+      setSelectedToolIds([]);  // 선택 초기화
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setListLoading(false);
+    }
+  };
+
+  // === Upload View Handlers ===
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.name.endsWith('.py')) {
+      setError('Python (.py) 파일만 업로드 가능합니다.');
+      return;
+    }
+    setError('');
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setUploadedCode(ev.target.result);
+      setFileName(file.name);
+      setAnalysisResult(null);
+    };
+    reader.readAsText(file);
+  };
+
+  const handleAnalyze = async () => {
+    if (!uploadedCode) return;
+    setAnalyzing(true);
+    setError('');
+    try {
+      const inputOverride = useSchemaOverride && schemaOverride.input ? schemaOverride.input : null;
+      const outputOverride = useSchemaOverride && schemaOverride.output ? schemaOverride.output : null;
+      const result = await api.analyzeScript(uploadedCode, fileName, null, inputOverride, outputOverride);
+      setAnalysisResult(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    if (!analysisResult || !uploadedCode) return;
+    setRegistering(true);
+    setError('');
+
+    console.log('[ToolsPanel] 도구 등록 시작:', analysisResult.tool_name);
+    console.log('[ToolsPanel] input_schema:', analysisResult.input_schema);
+    console.log('[ToolsPanel] params_schema:', analysisResult.params_schema);
+
+    try {
+      const registerData = {
+        tool_name: analysisResult.tool_name,
+        description: analysisResult.description,
+        execution_type: analysisResult.execution_type,
+        file_name: fileName,
+        source_code: uploadedCode,
+        input_schema: analysisResult.input_schema,
+        output_schema: analysisResult.output_schema,
+        params_schema: analysisResult.params_schema || null,
+      };
+      console.log('[ToolsPanel] 등록 요청 데이터:', registerData);
+
+      const result = await api.registerTool(registerData);
+      console.log('[ToolsPanel] 등록 완료:', result);
+
+      // Reset and go back to tools
+      setUploadedCode('');
+      setFileName('');
+      setAnalysisResult(null);
+      setView('main');
+    } catch (err) {
+      console.error('[ToolsPanel] 등록 실패:', err);
+      setError(err.message);
+    } finally {
+      setRegistering(false);
+    }
+  };
+
+  // === Detail View Handlers ===
+
+  const openDetail = async (tool) => {
+    setSelectedTool(tool);
+    setToolDetail(null);
+    setExecResult(null);
+    setPendingResult(null);
+    setError('');
+    // 파라미터 기본값 초기화 (BOP 값을 fallback으로 사용)
+    const bopData = exportBopData();
+    const defaults = {};
+    (tool.params_schema || []).forEach(p => {
+      if (p.default != null) {
+        defaults[p.key] = p.default;
+      } else if (bopData && bopData[p.key] != null) {
+        // BOP fallback: BOP에 같은 키가 있으면 그 값을 기본값으로 사용
+        defaults[p.key] = bopData[p.key];
+      }
+    });
+    setToolParams(defaults);
+    setView('detail');
+
+    // 어댑터 코드를 포함한 상세 정보 로드
+    try {
+      const detail = await api.getToolDetail(tool.tool_id);
+      setToolDetail(detail);
+    } catch (err) {
+      console.error('[ToolsPanel] 도구 상세 조회 실패:', err);
+      // 실패해도 계속 진행 (어댑터 코드만 안 보일 뿐)
+    }
+  };
+
+  const handleExecute = async () => {
+    if (!selectedTool) return;
+    setExecuting(true);
+    setExecResult(null);
+    setPendingResult(null);
+    setOriginalBop(null);
+    setBopChanges(null);
+    setError('');
+
+    console.log('[ToolsPanel] 도구 실행 시작:', selectedTool.tool_id);
+
+    try {
+      const collapsedBop = exportBopData();
+      if (!collapsedBop) {
+        setError('실행할 BOP 데이터가 없습니다. 먼저 BOP를 생성해주세요.');
+        setExecuting(false);
+        return;
+      }
+      // 빈 문자열을 number로 변환하고 빈 값은 제거
+      const cleanParams = {};
+      const schema = selectedTool.params_schema || [];
+      schema.forEach(p => {
+        const val = toolParams[p.key];
+        if (val !== '' && val != null) {
+          cleanParams[p.key] = p.type === 'number' ? Number(val) : val;
+        }
+      });
+
+      console.log('[ToolsPanel] 전송할 params:', cleanParams);
+      console.log('[ToolsPanel] BOP 요약: processes=%d, obstacles=%d',
+        collapsedBop.processes?.length || 0,
+        collapsedBop.obstacles?.length || 0);
+
+      const result = await api.executeTool(
+        selectedTool.tool_id,
+        collapsedBop,
+        Object.keys(cleanParams).length > 0 ? cleanParams : null
+      );
+
+      console.log('[ToolsPanel] 실행 결과:', result);
+      setExecResult(result);
+      if (result.success && result.updated_bop) {
+        const changes = computeBopChanges(collapsedBop, result.updated_bop);
+        if (changes) {
+          setOriginalBop(collapsedBop);
+          setPendingResult(result);
+          setBopChanges(changes);
+        }
+        // changes가 null이면 BOP 반영 버튼이 표시되지 않음
+      }
+    } catch (err) {
+      setExecResult({ success: false, message: err.message });
+    } finally {
+      setExecuting(false);
+    }
+  };
+
+  const handleApplyToBop = () => {
+    if (!pendingResult || !pendingResult.updated_bop || !bopChanges) return;
+
+    // 변경 사항 요약 생성
+    const changeSummary = bopChanges.map(c => {
+      if (c.type === 'add') return `${c.field} ${c.count}개 추가`;
+      if (c.type === 'remove') return `${c.field} ${c.count}개 삭제`;
+      if (c.type === 'modify') return `${c.field} ${c.count}개 수정`;
+      return '';
+    }).join('\n');
+
+    const confirmed = confirm(`다음 변경 사항을 BOP에 반영하시겠습니까?\n\n${changeSummary}`);
+    if (!confirmed) return;
+
+    setBopData(pendingResult.updated_bop);
+    // BOP 반영 후 그리드 재계산 (모든 도구 공통 - 병렬 확장, 공정 위치 정규화)
+    setTimeout(() => normalizeAllProcesses(), 0);
+    addMessage('assistant', `"${selectedTool.tool_name}" 도구 결과가 BOP에 반영되었습니다.`);
+    setPendingResult(null);
+    setBopChanges(null);
+    setOriginalBop(null);
+  };
+
+  const handleCancelApply = () => {
+    setPendingResult(null);
+    setBopChanges(null);
+    setOriginalBop(null);
+  };
+
+
+  const handleDelete = async () => {
+    if (!selectedTool) return;
+    if (!confirm(`"${selectedTool.tool_name}" 도구를 삭제하시겠습니까?`)) return;
+    try {
+      await api.deleteTool(selectedTool.tool_id);
+      setSelectedTool(null);
+      setSelectedToolIds([]);  // 선택 초기화
+      setView('main');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // 다중 삭제
+  const handleDeleteSelected = async () => {
+    if (selectedToolIds.length === 0) return;
+    if (!confirm(`선택한 ${selectedToolIds.length}개 도구를 삭제하시겠습니까?`)) return;
+
+    try {
+      setListLoading(true);
+      // 병렬로 삭제
+      await Promise.all(selectedToolIds.map(id => api.deleteTool(id)));
+      setSelectedToolIds([]);
+      await loadTools();  // 목록 새로고침
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setListLoading(false);
+    }
+  };
+
+  // 체크박스 토글
+  const toggleToolSelection = (toolId, e) => {
+    e.stopPropagation();  // 카드 클릭 이벤트 방지
+    setSelectedToolIds(prev =>
+      prev.includes(toolId)
+        ? prev.filter(id => id !== toolId)
+        : [...prev, toolId]
+    );
+  };
+
+  // 전체 선택/해제
+  const toggleSelectAll = () => {
+    if (selectedToolIds.length === tools.length) {
+      setSelectedToolIds([]);
+    } else {
+      setSelectedToolIds(tools.map(t => t.tool_id));
+    }
+  };
+
+  // === AI Script Generation Handlers (2-step process) ===
+
+  const handleGenerateSchema = async () => {
+    if (!genDescription.trim()) return;
+    setGeneratingSchema(true);
+    setError('');
+    setGeneratedSchema(null);
+    try {
+      const result = await api.generateSchema(genDescription);
+      if (result.success) {
+        setGeneratedSchema(result);
+        setEditedInputSchema(result.input_schema);
+        setEditedOutputSchema(result.output_schema);
+        setEditedParams(result.suggested_params || []);
+      } else {
+        setError(result.message || '스키마 생성에 실패했습니다.');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setGeneratingSchema(false);
+    }
+  };
+
+  const handleGenerateScript = async () => {
+    if (!genDescription.trim() || !editedInputSchema || !editedOutputSchema) return;
+    setGenerating(true);
+    setError('');
+    setGeneratedResult(null);
+    try {
+      const result = await api.generateScript(genDescription, editedInputSchema, editedOutputSchema);
+      if (result.success) {
+        setGeneratedResult(result);
+        setEditedCode(result.script_code || '');
+      } else {
+        setError(result.message || '스크립트 생성에 실패했습니다.');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const addParam = () => {
+    setEditedParams([...editedParams, { key: '', label: '', type: 'string', required: false, default: null }]);
+  };
+
+  const updateParam = (idx, field, value) => {
+    const updated = [...editedParams];
+    updated[idx][field] = value;
+    setEditedParams(updated);
+  };
+
+  const removeParam = (idx) => {
+    setEditedParams(editedParams.filter((_, i) => i !== idx));
+  };
+
+  const handleRegisterGenerated = async () => {
+    if (!generatedResult || !editedCode || !editedInputSchema || !editedOutputSchema) return;
+    setRegistering(true);
+    setError('');
+    try {
+      // 스키마는 이미 확정되었으므로 스키마 오버라이드로 등록
+      const analysisRes = await api.analyzeScript(
+        editedCode,
+        `${generatedResult.tool_name}.py`,
+        null,
+        editedInputSchema,
+        editedOutputSchema
+      );
+
+      // 등록
+      await api.registerTool({
+        tool_name: analysisRes.tool_name || generatedResult.tool_name,
+        description: analysisRes.description || generatedResult.description,
+        execution_type: analysisRes.execution_type || 'python',
+        file_name: `${generatedResult.tool_name}.py`,
+        source_code: editedCode,
+        input_schema: editedInputSchema,
+        output_schema: editedOutputSchema,
+        params_schema: editedParams.length > 0 ? editedParams : null,
+      });
+
+      // Reset and go back
+      setGenDescription('');
+      setGeneratedSchema(null);
+      setGeneratedResult(null);
+      setEditedCode('');
+      setEditedInputSchema(null);
+      setEditedOutputSchema(null);
+      setEditedParams([]);
+      setView('main');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRegistering(false);
+    }
+  };
+
+  // === AI Improvement Handlers ===
+
+  const handleImprove = async () => {
+    if (!selectedTool || !improveFeedback.trim()) return;
+    setImproving(true);
+    setError('');
+    setImproveResult(null);
+
+    console.log('[ToolsPanel] AI 개선 요청:', selectedTool.tool_id);
+    console.log('[ToolsPanel] 피드백:', improveFeedback);
+    console.log('[ToolsPanel] 수정 범위:', improveScope);
+
+    try {
+      const result = await api.improveTool(selectedTool.tool_id, {
+        userFeedback: improveFeedback,
+        executionContext: execResult ? {
+          success: execResult.success,
+          stdout: execResult.stdout,
+          stderr: execResult.stderr,
+          tool_output: execResult.tool_output,
+        } : null,
+        modifyAdapter: improveScope.adapter,
+        modifyParams: improveScope.params,
+        modifyScript: improveScope.script,
+      });
+
+      console.log('[ToolsPanel] 개선 결과:', result);
+
+      if (result.success) {
+        setImproveResult(result);
+      } else {
+        setError(result.message || '개선 생성에 실패했습니다.');
+      }
+    } catch (err) {
+      console.error('[ToolsPanel] 개선 실패:', err);
+      setError(err.message);
+    } finally {
+      setImproving(false);
+    }
+  };
+
+  const handleApplyImprovement = async (createNewVersion) => {
+    if (!selectedTool || !improveResult?.preview) return;
+    setApplying(true);
+    setError('');
+
+    console.log('[ToolsPanel] 개선 적용:', createNewVersion ? '새 버전' : '덮어쓰기');
+
+    try {
+      const result = await api.applyImprovement(selectedTool.tool_id, {
+        preProcessCode: improveResult.preview.pre_process_code,
+        postProcessCode: improveResult.preview.post_process_code,
+        paramsSchema: improveResult.preview.params_schema,
+        scriptCode: improveResult.preview.script_code,
+        createNewVersion,
+      });
+
+      console.log('[ToolsPanel] 적용 결과:', result);
+
+      if (result.success) {
+        addMessage('assistant', `"${selectedTool.tool_name}" 도구가 ${createNewVersion ? '새 버전(' + result.tool_name + ')으로' : ''} 개선되었습니다.`);
+        // Reset and go back
+        setImproveResult(null);
+        setImproveFeedback('');
+        setShowImprove(false);
+        setView('main');
+      }
+    } catch (err) {
+      console.error('[ToolsPanel] 적용 실패:', err);
+      setError(err.message);
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  // === Render ===
+
+  const renderTools = () => (
+    <div style={styles.content}>
+      <div style={styles.header}>
+        <h3 style={styles.title}>도구 관리</h3>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button style={styles.aiBtn} onClick={() => {
+            setView('generate');
+            setError('');
+            setGenDescription('');
+            setGeneratedSchema(null);
+            setGeneratedResult(null);
+            setEditedInputSchema(null);
+            setEditedOutputSchema(null);
+            setEditedParams([]);
+            setEditedCode('');
+          }}>
+            ✨ AI 생성
+          </button>
+          <button style={styles.secondaryBtn} onClick={() => { setView('upload'); setError(''); }}>
+            + 업로드
+          </button>
+        </div>
+      </div>
+
+      {/* 다중 선택 도구 */}
+      {!listLoading && tools.length > 0 && (
+        <div style={{ padding: '8px 12px', backgroundColor: '#f8f9fa', borderRadius: 4, marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer', userSelect: 'none' }}>
+            <input
+              type="checkbox"
+              checked={selectedToolIds.length === tools.length && tools.length > 0}
+              onChange={toggleSelectAll}
+              style={{ cursor: 'pointer' }}
+            />
+            <span>전체 선택 ({selectedToolIds.length}/{tools.length})</span>
+          </label>
+          {selectedToolIds.length > 0 && (
+            <button
+              style={{ ...styles.dangerBtn, padding: '4px 12px', fontSize: 12 }}
+              onClick={handleDeleteSelected}
+            >
+              선택 삭제 ({selectedToolIds.length})
+            </button>
+          )}
+        </div>
+      )}
+
+      {listLoading && <div style={styles.info}>불러오는 중...</div>}
+
+      {!listLoading && tools.length === 0 && (
+        <div style={styles.emptyState}>
+          <p style={{ fontWeight: 'bold', marginBottom: 8 }}>등록된 도구가 없습니다</p>
+          <p style={{ color: '#888', fontSize: 13 }}>
+            Python 최적화 스크립트를 업로드하여<br />BOP 데이터와 연동할 수 있습니다.
+          </p>
+        </div>
+      )}
+
+      {tools.map(tool => (
+        <div
+          key={tool.tool_id}
+          style={{
+            ...styles.card,
+            backgroundColor: selectedToolIds.includes(tool.tool_id) ? '#e3f2fd' : 'white'
+          }}
+          onClick={() => openDetail(tool)}
+        >
+          <div style={styles.cardHeader}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <input
+                type="checkbox"
+                checked={selectedToolIds.includes(tool.tool_id)}
+                onChange={(e) => toggleToolSelection(tool.tool_id, e)}
+                onClick={(e) => e.stopPropagation()}
+                style={{ cursor: 'pointer' }}
+              />
+              <span style={styles.cardName}>{tool.tool_name}</span>
+            </div>
+            <span style={styles.badge}>{tool.execution_type}</span>
+          </div>
+          <div style={styles.cardDesc}>{tool.description}</div>
+        </div>
+      ))}
+
+      {error && <div style={styles.error}>{error}</div>}
+    </div>
+  );
+
+  const renderUpload = () => (
+    <div style={styles.content}>
+      <div style={styles.header}>
+        <button style={styles.backBtn} onClick={() => setView('main')}>← 목록</button>
+        <h3 style={styles.title}>도구 업로드</h3>
+      </div>
+
+      {/* Step 1: File Upload */}
+      <div style={styles.section}>
+        <label style={styles.label}>1. Python 스크립트 선택</label>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".py"
+          onChange={handleFileSelect}
+          style={{ display: 'none' }}
+        />
+        <button style={styles.secondaryBtn} onClick={() => fileInputRef.current?.click()}>
+          {fileName || '파일 선택...'}
+        </button>
+      </div>
+
+      {/* Step 2: Code Preview */}
+      {uploadedCode && (
+        <div style={styles.section}>
+          <label style={styles.label}>2. 코드 미리보기</label>
+          <pre style={styles.codePreview}>
+            {uploadedCode.length > 2000 ? uploadedCode.slice(0, 2000) + '\n...' : uploadedCode}
+          </pre>
+        </div>
+      )}
+
+      {/* Step 2.5: Schema Override (Optional) */}
+      {uploadedCode && !analysisResult && (
+        <div style={styles.section}>
+          <label style={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={useSchemaOverride}
+              onChange={e => setUseSchemaOverride(e.target.checked)}
+            />
+            스키마 직접 지정 (AI 분석 스킵)
+          </label>
+          {useSchemaOverride && (
+            <div style={{ ...styles.resultCard, marginTop: 8 }}>
+              <div style={{ marginBottom: 12 }}>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>입력 스키마 (JSON)</label>
+                <textarea
+                  style={{ ...styles.textarea, fontFamily: 'monospace', fontSize: 11, minHeight: 120 }}
+                  placeholder='{"type": "json", "description": "BOP 데이터"}'
+                  value={schemaOverride.input ? JSON.stringify(schemaOverride.input, null, 2) : ''}
+                  onChange={e => {
+                    try {
+                      const parsed = e.target.value.trim() ? JSON.parse(e.target.value) : null;
+                      setSchemaOverride(prev => ({ ...prev, input: parsed }));
+                      setError('');
+                    } catch (err) {
+                      setError('입력 스키마 JSON 형식 오류');
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>출력 스키마 (JSON)</label>
+                <textarea
+                  style={{ ...styles.textarea, fontFamily: 'monospace', fontSize: 11, minHeight: 120 }}
+                  placeholder='{"type": "json", "description": "수정된 BOP 데이터"}'
+                  value={schemaOverride.output ? JSON.stringify(schemaOverride.output, null, 2) : ''}
+                  onChange={e => {
+                    try {
+                      const parsed = e.target.value.trim() ? JSON.parse(e.target.value) : null;
+                      setSchemaOverride(prev => ({ ...prev, output: parsed }));
+                      setError('');
+                    } catch (err) {
+                      setError('출력 스키마 JSON 형식 오류');
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 3: Analyze Button */}
+      {uploadedCode && !analysisResult && (
+        <div style={styles.section}>
+          <label style={styles.label}>3. {useSchemaOverride ? '스키마로 등록' : 'AI 분석'}</label>
+          <button
+            style={styles.primaryBtn}
+            onClick={handleAnalyze}
+            disabled={analyzing || (useSchemaOverride && (!schemaOverride.input || !schemaOverride.output))}
+          >
+            {analyzing ? (useSchemaOverride ? '등록 준비 중...' : '분석 중...') : (useSchemaOverride ? '스키마로 등록' : '분석하기')}
+          </button>
+        </div>
+      )}
+
+      {/* Step 4: Analysis Result */}
+      {analysisResult && (
+        <div style={styles.section}>
+          <label style={styles.label}>4. 분석 결과</label>
+          <div style={styles.resultCard}>
+            <div style={styles.resultRow}>
+              <span style={styles.resultLabel}>도구명:</span>
+              <input
+                style={styles.input}
+                value={analysisResult.tool_name}
+                onChange={e => setAnalysisResult({ ...analysisResult, tool_name: e.target.value })}
+              />
+            </div>
+            <div style={styles.resultRow}>
+              <span style={styles.resultLabel}>설명:</span>
+              <input
+                style={styles.input}
+                value={analysisResult.description}
+                onChange={e => setAnalysisResult({ ...analysisResult, description: e.target.value })}
+              />
+            </div>
+            <div style={styles.resultRow}>
+              <span style={styles.resultLabel}>입력:</span>
+              <span style={styles.resultValue}>
+                {analysisResult.input_schema?.type} - {analysisResult.input_schema?.description}
+              </span>
+            </div>
+            {analysisResult.input_schema?.args_format && (
+              <div style={styles.resultRow}>
+                <span style={styles.resultLabel}>인자:</span>
+                <code style={styles.codeInline}>{analysisResult.input_schema.args_format}</code>
+              </div>
+            )}
+            <div style={styles.resultRow}>
+              <span style={styles.resultLabel}>출력:</span>
+              <span style={styles.resultValue}>
+                {analysisResult.output_schema?.type} - {analysisResult.output_schema?.description}
+              </span>
+            </div>
+            {analysisResult.params_schema?.length > 0 && (
+              <div style={{ marginTop: 8, borderTop: '1px solid #e0e0e0', paddingTop: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#555', marginBottom: 6 }}>
+                  추가 파라미터 ({analysisResult.params_schema.length}개)
+                </div>
+                {analysisResult.params_schema.map((p, idx) => (
+                  <div key={idx} style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+                    <span style={{ fontWeight: 500 }}>{p.label}</span>
+                    <span style={{ color: '#999' }}> ({p.key}, {p.type})</span>
+                    {p.required && <span style={{ color: '#c0392b', marginLeft: 4 }}>*필수</span>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Step 5: Register */}
+      {analysisResult && (
+        <div style={styles.section}>
+          <label style={styles.label}>5. 도구 등록</label>
+          <button
+            style={styles.primaryBtn}
+            onClick={handleRegister}
+            disabled={registering}
+          >
+            {registering ? '등록 중 (어댑터 코드 생성)...' : '등록하기'}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderToolOutput = (toolOutput) => {
+    if (!toolOutput) return null;
+    try {
+      // JSON 파싱 시도
+      const parsed = JSON.parse(toolOutput);
+      // JSON 전체를 보기 좋게 표시
+      return (
+        <pre style={{
+          ...styles.codePreview,
+          maxHeight: '400px',  // 스크롤 가능
+          overflow: 'auto',
+          fontSize: 11,
+          lineHeight: 1.6,
+          whiteSpace: 'pre-wrap',  // 줄바꿈 허용
+          wordBreak: 'break-word'  // 긴 단어 줄바꿈
+        }}>
+          {JSON.stringify(parsed, null, 2)}
+        </pre>
+      );
+    } catch {
+      // JSON이 아니면 그대로 표시
+      return (
+        <pre style={{
+          ...styles.codePreview,
+          maxHeight: '400px',  // 스크롤 가능
+          overflow: 'auto',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        }}>
+          {toolOutput}
+        </pre>
+      );
+    }
+  };
+
+  const renderGenerate = () => (
+    <div style={styles.content}>
+      <div style={styles.header}>
+        <button style={styles.backBtn} onClick={() => setView('main')}>← 목록</button>
+        <h3 style={styles.title}>AI로 도구 생성 (2단계)</h3>
+      </div>
+
+      {/* Step 1: Description Input & Schema Generation */}
+      <div style={styles.section}>
+        <label style={styles.label}>1단계: 원하는 도구 기능 설명</label>
+        <textarea
+          style={styles.textarea}
+          placeholder="예: 공정 간 거리를 계산해서 최소 거리보다 가까운 공정들을 찾아주는 도구가 필요해. 최소 거리는 파라미터로 받고 싶어."
+          value={genDescription}
+          onChange={e => setGenDescription(e.target.value)}
+          rows={4}
+          disabled={generatedSchema}
+        />
+        {!generatedSchema && (
+          <button
+            style={{ ...styles.primaryBtn, marginTop: 8 }}
+            onClick={handleGenerateSchema}
+            disabled={generatingSchema || !genDescription.trim()}
+          >
+            {generatingSchema ? 'AI가 스키마 생성 중...' : '1단계: 스키마 생성'}
+          </button>
+        )}
+        <div style={{ fontSize: 11, color: '#888', marginTop: 6 }}>
+          먼저 AI가 도구에 필요한 입출력 스키마를 생성합니다.
+        </div>
+      </div>
+
+      {/* Step 2: Schema Review & Edit */}
+      {generatedSchema && !generatedResult && (
+        <>
+          <div style={styles.section}>
+            <label style={styles.label}>2단계: 생성된 스키마 확인 및 수정</label>
+            <div style={styles.resultCard}>
+              <div style={styles.resultRow}>
+                <span style={styles.resultLabel}>도구명:</span>
+                <span style={styles.resultValue}>{generatedSchema.tool_name}</span>
+              </div>
+              <div style={styles.resultRow}>
+                <span style={styles.resultLabel}>설명:</span>
+                <span style={styles.resultValue}>{generatedSchema.description}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.section}>
+            <label style={styles.label}>입력 스키마</label>
+            <div style={styles.resultCard}>
+              <div style={{ marginBottom: 10 }}>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>타입</label>
+                <select
+                  style={{ ...styles.input, cursor: 'pointer' }}
+                  value={editedInputSchema?.type || 'json'}
+                  onChange={e => setEditedInputSchema({ ...editedInputSchema, type: e.target.value })}
+                >
+                  <option value="json">json</option>
+                  <option value="dict">dict</option>
+                  <option value="list">list</option>
+                  <option value="string">string</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>설명</label>
+                <input
+                  style={styles.input}
+                  value={editedInputSchema?.description || ''}
+                  onChange={e => setEditedInputSchema({ ...editedInputSchema, description: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.section}>
+            <label style={styles.label}>출력 스키마</label>
+            <div style={styles.resultCard}>
+              <div style={{ marginBottom: 10 }}>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>타입</label>
+                <select
+                  style={{ ...styles.input, cursor: 'pointer' }}
+                  value={editedOutputSchema?.type || 'json'}
+                  onChange={e => setEditedOutputSchema({ ...editedOutputSchema, type: e.target.value })}
+                >
+                  <option value="json">json</option>
+                  <option value="dict">dict</option>
+                  <option value="list">list</option>
+                  <option value="string">string</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>설명</label>
+                <input
+                  style={styles.input}
+                  value={editedOutputSchema?.description || ''}
+                  onChange={e => setEditedOutputSchema({ ...editedOutputSchema, description: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.section}>
+            <label style={styles.label}>파라미터 (선택)</label>
+            <div style={styles.resultCard}>
+              {editedParams.map((param, idx) => (
+                <div key={idx} style={{ marginBottom: 12, paddingBottom: 12, borderBottom: '1px solid #e0e0e0' }}>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
+                    <input
+                      style={{ ...styles.input, flex: 1 }}
+                      placeholder="키"
+                      value={param.key}
+                      onChange={e => updateParam(idx, 'key', e.target.value)}
+                    />
+                    <input
+                      style={{ ...styles.input, flex: 1 }}
+                      placeholder="레이블"
+                      value={param.label}
+                      onChange={e => updateParam(idx, 'label', e.target.value)}
+                    />
+                    <select
+                      style={{ ...styles.input, width: 100, cursor: 'pointer' }}
+                      value={param.type}
+                      onChange={e => updateParam(idx, 'type', e.target.value)}
+                    >
+                      <option value="string">string</option>
+                      <option value="number">number</option>
+                      <option value="boolean">boolean</option>
+                    </select>
+                    <button
+                      style={{ ...styles.dangerBtn, padding: '4px 8px', fontSize: 11 }}
+                      onClick={() => removeParam(idx)}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button style={styles.secondaryBtn} onClick={addParam}>
+                + 파라미터 추가
+              </button>
+            </div>
+          </div>
+
+          <div style={styles.section}>
+            <button
+              style={styles.aiBtn}
+              onClick={handleGenerateScript}
+              disabled={generating}
+            >
+              {generating ? 'AI가 스크립트 생성 중...' : '3단계: 스크립트 생성'}
+            </button>
+            <div style={{ fontSize: 11, color: '#888', marginTop: 6 }}>
+              확정된 스키마를 기반으로 Python 스크립트를 생성합니다.
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Step 3: Script Review & Register */}
+      {generatedResult && (
+        <>
+          <div style={{ ...styles.resultCard, backgroundColor: '#e7f5e7', marginBottom: 16 }}>
+            <div style={{ fontWeight: 600, marginBottom: 6 }}>✅ 스크립트 생성 완료</div>
+            <div style={{ fontSize: 13 }}>{generatedResult.tool_name}</div>
+          </div>
+
+          <div style={styles.section}>
+            <label style={styles.label}>4단계: 코드 확인 및 수정</label>
+            <textarea
+              style={{ ...styles.textarea, fontFamily: 'monospace', fontSize: 11, minHeight: 300 }}
+              value={editedCode}
+              onChange={e => setEditedCode(e.target.value)}
+            />
+          </div>
+
+          <div style={styles.section}>
+            <label style={styles.label}>5단계: 도구 등록</label>
+            <button
+              style={styles.primaryBtn}
+              onClick={handleRegisterGenerated}
+              disabled={registering || !editedCode.trim()}
+            >
+              {registering ? '등록 중 (어댑터 생성)...' : '등록하기'}
+            </button>
+          </div>
+        </>
+      )}
+
+      {error && <div style={styles.error}>{error}</div>}
+    </div>
+  );
+
+  const renderDetail = () => (
+    <div style={styles.content}>
+      <div style={styles.header}>
+        <button style={styles.backBtn} onClick={() => setView('main')}>← 목록</button>
+        <h3 style={styles.title}>{selectedTool?.tool_name}</h3>
+      </div>
+
+      <div style={styles.section}>
+        <div style={styles.resultCard}>
+          <div style={styles.resultRow}>
+            <span style={styles.resultLabel}>ID:</span>
+            <span style={styles.resultValue}>{selectedTool?.tool_id}</span>
+          </div>
+          <div style={styles.resultRow}>
+            <span style={styles.resultLabel}>설명:</span>
+            <span style={styles.resultValue}>{selectedTool?.description}</span>
+          </div>
+          <div style={styles.resultRow}>
+            <span style={styles.resultLabel}>타입:</span>
+            <span style={styles.badge}>{selectedTool?.execution_type}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Parameter Input Form */}
+      {selectedTool?.params_schema?.length > 0 && (
+        <div style={styles.section}>
+          <label style={styles.label}>파라미터 설정</label>
+          <div style={styles.resultCard}>
+            {selectedTool.params_schema.map(p => (
+              <div key={p.key} style={{ marginBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#333' }}>{p.label}</span>
+                  {p.required && <span style={{ color: '#c0392b', fontSize: 11 }}>*</span>}
+                </div>
+                {p.description && (
+                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>{p.description}</div>
+                )}
+                <input
+                  style={styles.paramInput}
+                  type={p.type === 'number' ? 'number' : 'text'}
+                  placeholder={p.default != null ? `기본값: ${p.default}` : (p.required ? '' : '(선택)')}
+                  value={toolParams[p.key] ?? ''}
+                  onChange={e => setToolParams(prev => ({ ...prev, [p.key]: e.target.value }))}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Execute */}
+      <div style={styles.section}>
+        <button
+          style={styles.primaryBtn}
+          onClick={handleExecute}
+          disabled={executing}
+        >
+          {executing ? '실행 중...' : '실행하기'}
+        </button>
+      </div>
+
+      {/* Execution Result */}
+      {execResult && (
+        <div style={styles.section}>
+          <label style={styles.label}>실행 결과</label>
+          <div style={{
+            ...styles.resultCard,
+            borderLeft: `4px solid ${execResult.success ? '#50c878' : '#ff6b6b'}`,
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: 6, color: execResult.success ? '#2d7a3a' : '#c0392b' }}>
+              {execResult.success ? '성공' : '실패'}
+            </div>
+            <div style={{ fontSize: 13, marginBottom: 6 }}>{execResult.message}</div>
+            {execResult.execution_time_sec != null && (
+              <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>
+                실행 시간: {execResult.execution_time_sec.toFixed(1)}초
+              </div>
+            )}
+
+            {/* Pre-process Adapter Code */}
+            {toolDetail?.adapter?.pre_process_code && (
+              <details style={{ marginTop: 8 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666', fontWeight: 600 }}>
+                  🔧 Pre-process 코드 (BOP → 도구 입력)
+                </summary>
+                <pre style={{
+                  ...styles.codePreview,
+                  maxHeight: '300px',
+                  overflow: 'auto',
+                  fontSize: 11,
+                  lineHeight: 1.6,
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word'
+                }}>
+                  {toolDetail.adapter.pre_process_code}
+                </pre>
+              </details>
+            )}
+
+            {/* Tool Input Preview */}
+            {execResult.tool_input && (
+              <details style={{ marginTop: 8 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666', fontWeight: 600 }}>
+                  📥 도구 입력 데이터 (어댑터 변환 후)
+                </summary>
+                {renderToolOutput(execResult.tool_input)}
+              </details>
+            )}
+
+            {/* Tool Output Preview */}
+            {execResult.tool_output && (
+              <details style={{ marginTop: 8 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666', fontWeight: 600 }}>
+                  📤 도구 출력 결과 (스크립트 생성)
+                </summary>
+                {renderToolOutput(execResult.tool_output)}
+              </details>
+            )}
+
+            {/* Post-process Adapter Code */}
+            {toolDetail?.adapter?.post_process_code && (
+              <details style={{ marginTop: 8 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666', fontWeight: 600 }}>
+                  🔧 Post-process 코드 (도구 출력 → BOP)
+                </summary>
+                <pre style={{
+                  ...styles.codePreview,
+                  maxHeight: '300px',
+                  overflow: 'auto',
+                  fontSize: 11,
+                  lineHeight: 1.6,
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word'
+                }}>
+                  {toolDetail.adapter.post_process_code}
+                </pre>
+              </details>
+            )}
+
+            {execResult.stdout && (
+              <details style={{ marginTop: 8 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666' }}>stdout</summary>
+                <pre style={styles.codePreview}>{execResult.stdout}</pre>
+              </details>
+            )}
+            {execResult.stderr && (
+              <details style={{ marginTop: 4 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666' }}>실행 로그</summary>
+                <pre style={{ ...styles.codePreview }}>{execResult.stderr}</pre>
+              </details>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Apply to BOP Section */}
+      {pendingResult && bopChanges && (
+        <div style={styles.section}>
+          <label style={styles.label}>BOP 변경 사항</label>
+          <div style={{ ...styles.resultCard, borderLeft: '4px solid #f39c12', marginBottom: 12 }}>
+            {bopChanges.map((change, idx) => (
+              <div key={idx} style={{ fontSize: 13, marginBottom: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '2px 6px',
+                    borderRadius: 3,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    backgroundColor: change.type === 'add' ? '#d4edda' : change.type === 'remove' ? '#f8d7da' : '#fff3cd',
+                    color: change.type === 'add' ? '#155724' : change.type === 'remove' ? '#721c24' : '#856404',
+                  }}>
+                    {change.type === 'add' ? '추가' : change.type === 'remove' ? '삭제' : '수정'}
+                  </span>
+                  <span>{change.field} {change.count}개</span>
+                </div>
+                {change.details && change.details.length > 0 && (
+                  <div style={{ marginLeft: 8, marginTop: 4, fontSize: 11, color: '#666' }}>
+                    {change.details.slice(0, 5).map((detail, i) => (
+                      <div key={i}>• {detail}</div>
+                    ))}
+                    {change.details.length > 5 && <div>• ... 외 {change.details.length - 5}개</div>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button style={styles.applyBtn} onClick={handleApplyToBop}>
+              반영하기
+            </button>
+            <button style={styles.secondaryBtn} onClick={handleCancelApply}>
+              취소
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* AI Improvement Section */}
+      {execResult && (
+        <div style={{ ...styles.section, borderTop: '1px solid #e0e0e0', paddingTop: 16, marginTop: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <label style={{ ...styles.label, marginBottom: 0 }}>AI 개선</label>
+            <button
+              style={showImprove ? styles.secondaryBtn : styles.aiBtn}
+              onClick={() => { setShowImprove(!showImprove); setImproveResult(null); setImproveFeedback(''); }}
+            >
+              {showImprove ? '접기' : '✨ AI로 개선하기'}
+            </button>
+          </div>
+
+          {showImprove && (
+            <>
+              {/* 수정 범위 선택 */}
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>수정 범위 선택:</div>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                  <label style={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={improveScope.adapter}
+                      onChange={e => setImproveScope(prev => ({ ...prev, adapter: e.target.checked }))}
+                    />
+                    어댑터 코드
+                  </label>
+                  <label style={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={improveScope.params}
+                      onChange={e => setImproveScope(prev => ({ ...prev, params: e.target.checked }))}
+                    />
+                    파라미터 스키마
+                  </label>
+                  <label style={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={improveScope.script}
+                      onChange={e => setImproveScope(prev => ({ ...prev, script: e.target.checked }))}
+                    />
+                    스크립트 코드
+                  </label>
+                </div>
+              </div>
+
+              {/* 피드백 입력 */}
+              <textarea
+                style={{ ...styles.textarea, marginBottom: 8 }}
+                placeholder="예: 장애물 정보는 BOP에서 가져오고, 벽 간격은 파라미터로 받을 수 있게 해줘."
+                value={improveFeedback}
+                onChange={e => setImproveFeedback(e.target.value)}
+                rows={3}
+              />
+              <button
+                style={styles.primaryBtn}
+                onClick={handleImprove}
+                disabled={improving || !improveFeedback.trim() || (!improveScope.adapter && !improveScope.params && !improveScope.script)}
+              >
+                {improving ? '개선 중...' : '개선 요청'}
+              </button>
+
+              {/* 개선 결과 미리보기 */}
+              {improveResult && improveResult.success && (
+                <div style={{ marginTop: 16 }}>
+                  <div style={{ ...styles.resultCard, borderLeft: '4px solid #667eea' }}>
+                    <div style={{ fontWeight: 600, marginBottom: 8, color: '#667eea' }}>개선 미리보기</div>
+                    <div style={{ fontSize: 13, marginBottom: 8 }}>{improveResult.explanation}</div>
+
+                    {improveResult.changes_summary?.length > 0 && (
+                      <div style={{ marginBottom: 12 }}>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: '#555', marginBottom: 4 }}>변경 사항:</div>
+                        {improveResult.changes_summary.map((change, idx) => (
+                          <div key={idx} style={{ fontSize: 12, color: '#666', marginLeft: 8 }}>• {change}</div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 코드 미리보기 토글 */}
+                    {improveResult.preview?.pre_process_code && (
+                      <details style={{ marginTop: 8 }}>
+                        <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666' }}>Pre-process 코드</summary>
+                        <pre style={{ ...styles.codePreview, maxHeight: 150 }}>{improveResult.preview.pre_process_code}</pre>
+                      </details>
+                    )}
+                    {improveResult.preview?.post_process_code && (
+                      <details style={{ marginTop: 4 }}>
+                        <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666' }}>Post-process 코드</summary>
+                        <pre style={{ ...styles.codePreview, maxHeight: 150 }}>{improveResult.preview.post_process_code}</pre>
+                      </details>
+                    )}
+                    {improveResult.preview?.params_schema && (
+                      <details style={{ marginTop: 4 }}>
+                        <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666' }}>파라미터 스키마</summary>
+                        <pre style={{ ...styles.codePreview, maxHeight: 150 }}>{JSON.stringify(improveResult.preview.params_schema, null, 2)}</pre>
+                      </details>
+                    )}
+                    {improveResult.preview?.script_code && (
+                      <details style={{ marginTop: 4 }}>
+                        <summary style={{ cursor: 'pointer', fontSize: 12, color: '#666' }}>스크립트 코드</summary>
+                        <pre style={{ ...styles.codePreview, maxHeight: 200 }}>{improveResult.preview.script_code}</pre>
+                      </details>
+                    )}
+                  </div>
+
+                  {/* 적용 버튼 */}
+                  <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                    <button
+                      style={styles.applyBtn}
+                      onClick={() => handleApplyImprovement(true)}
+                      disabled={applying}
+                    >
+                      {applying ? '적용 중...' : `새 버전으로 저장 (${getNextVersionLabel(selectedTool?.tool_id)})`}
+                    </button>
+                    <button
+                      style={styles.dangerBtn}
+                      onClick={() => handleApplyImprovement(false)}
+                      disabled={applying}
+                    >
+                      현재 도구에 덮어쓰기
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Script Update Section */}
+      {selectedTool && (
+        <div style={{ ...styles.section, borderTop: '1px solid #e0e0e0', paddingTop: 16, marginTop: 16 }}>
+          <label style={styles.label}>스크립트 업데이트</label>
+          <details>
+            <summary style={{ cursor: 'pointer', fontSize: 13, color: '#4a90e2', marginBottom: 8 }}>
+              스크립트 코드 수정하기
+            </summary>
+            <div style={{ ...styles.resultCard, marginTop: 8 }}>
+              <div style={{ marginBottom: 10 }}>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>파일명</label>
+                <input
+                  style={styles.input}
+                  placeholder="예: updated_script.py"
+                  value={scriptUpdateFileName}
+                  onChange={e => setScriptUpdateFileName(e.target.value)}
+                />
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <label style={{ fontSize: 12, color: '#555', display: 'block', marginBottom: 4 }}>코드</label>
+                <textarea
+                  style={{ ...styles.textarea, fontFamily: 'monospace', fontSize: 11, minHeight: 250 }}
+                  placeholder="새로운 Python 코드를 입력하세요..."
+                  value={scriptUpdateCode}
+                  onChange={e => setScriptUpdateCode(e.target.value)}
+                />
+              </div>
+              <button
+                style={styles.primaryBtn}
+                onClick={async () => {
+                  if (!scriptUpdateCode.trim() || !scriptUpdateFileName.trim()) {
+                    setError('파일명과 코드를 모두 입력해주세요.');
+                    return;
+                  }
+                  setUploadingScript(true);
+                  setError('');
+                  try {
+                    await api.updateToolScript(selectedTool.tool_id, scriptUpdateFileName, scriptUpdateCode);
+                    addMessage('assistant', `"${selectedTool.tool_name}" 스크립트가 업데이트되었습니다.`);
+                    setScriptUpdateCode('');
+                    setScriptUpdateFileName('');
+                    setView('main');
+                  } catch (err) {
+                    setError(err.message);
+                  } finally {
+                    setUploadingScript(false);
+                  }
+                }}
+                disabled={uploadingScript || !scriptUpdateCode.trim() || !scriptUpdateFileName.trim()}
+              >
+                {uploadingScript ? '업데이트 중...' : '스크립트 업데이트'}
+              </button>
+            </div>
+          </details>
+        </div>
+      )}
+
+      {/* Delete */}
+      <div style={{ ...styles.section, borderTop: '1px solid #eee', paddingTop: 16, marginTop: 16 }}>
+        <button style={styles.dangerBtn} onClick={handleDelete}>삭제하기</button>
+      </div>
+
+      {error && <div style={styles.error}>{error}</div>}
+    </div>
+  );
+
+  return (
+    <div style={styles.container}>
+      {/* Main view */}
+      {view === 'main' && renderTools()}
+
+      {/* Upload view */}
+      {view === 'upload' && renderUpload()}
+
+      {/* AI Generate view (2-step: schema → script) */}
+      {view === 'generate' && renderGenerate()}
+
+      {/* Detail view */}
+      {view === 'detail' && renderDetail()}
+    </div>
+  );
+}
+
+const styles = {
+  container: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
+  content: {
+    padding: '16px',
+    overflow: 'auto',
+    flex: 1,
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '16px',
+  },
+  title: {
+    margin: 0,
+    fontSize: '16px',
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  section: {
+    marginBottom: '16px',
+  },
+  label: {
+    display: 'block',
+    fontSize: '13px',
+    fontWeight: '600',
+    color: '#555',
+    marginBottom: '8px',
+  },
+  info: {
+    textAlign: 'center',
+    color: '#888',
+    padding: '20px',
+  },
+  emptyState: {
+    textAlign: 'center',
+    color: '#666',
+    padding: '40px 20px',
+  },
+  card: {
+    padding: '12px 14px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '6px',
+    marginBottom: '8px',
+    cursor: 'pointer',
+    transition: 'background-color 0.15s',
+    backgroundColor: '#fafafa',
+  },
+  cardHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '4px',
+  },
+  cardName: {
+    fontWeight: '600',
+    fontSize: '14px',
+  },
+  cardDesc: {
+    fontSize: '12px',
+    color: '#777',
+  },
+  badge: {
+    fontSize: '11px',
+    padding: '2px 8px',
+    borderRadius: '10px',
+    backgroundColor: '#e3f2fd',
+    color: '#1565c0',
+    fontWeight: '500',
+  },
+  primaryBtn: {
+    padding: '8px 16px',
+    backgroundColor: '#4a90e2',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '13px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+  },
+  secondaryBtn: {
+    padding: '8px 16px',
+    backgroundColor: '#f0f0f0',
+    color: '#333',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    fontSize: '13px',
+    cursor: 'pointer',
+  },
+  backBtn: {
+    padding: '4px 10px',
+    backgroundColor: 'transparent',
+    color: '#4a90e2',
+    border: '1px solid #4a90e2',
+    borderRadius: '4px',
+    fontSize: '12px',
+    cursor: 'pointer',
+  },
+  applyBtn: {
+    padding: '10px 20px',
+    backgroundColor: '#50c878',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  paramInput: {
+    width: '100%',
+    padding: '6px 10px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontSize: '13px',
+    boxSizing: 'border-box',
+  },
+  dangerBtn: {
+    padding: '8px 16px',
+    backgroundColor: '#ff6b6b',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '13px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+  },
+  codePreview: {
+    backgroundColor: '#f5f5f5',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    padding: '10px',
+    fontSize: '11px',
+    lineHeight: '1.4',
+    overflow: 'auto',
+    maxHeight: 'none',  // 제한 없음 (개별적으로 필요시 오버라이드)
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-all',
+    fontFamily: 'monospace',
+  },
+  resultCard: {
+    backgroundColor: '#f9f9f9',
+    border: '1px solid #e0e0e0',
+    borderRadius: '6px',
+    padding: '12px',
+  },
+  resultRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginBottom: '8px',
+    fontSize: '13px',
+  },
+  resultLabel: {
+    fontWeight: '600',
+    color: '#555',
+    minWidth: '50px',
+  },
+  resultValue: {
+    color: '#333',
+  },
+  input: {
+    flex: 1,
+    padding: '4px 8px',
+    border: '1px solid #ddd',
+    borderRadius: '3px',
+    fontSize: '13px',
+  },
+  error: {
+    color: '#c0392b',
+    backgroundColor: '#fdecea',
+    padding: '8px 12px',
+    fontSize: '13px',
+    borderBottom: '1px solid #f5c6cb',
+  },
+  codeInline: {
+    backgroundColor: '#f0f0f0',
+    padding: '2px 6px',
+    borderRadius: '3px',
+    fontSize: '11px',
+    fontFamily: 'monospace',
+    color: '#333',
+  },
+  aiBtn: {
+    padding: '8px 16px',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '13px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+  },
+  textarea: {
+    width: '100%',
+    padding: '10px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontSize: '13px',
+    resize: 'vertical',
+    boxSizing: 'border-box',
+    lineHeight: 1.5,
+  },
+  checkboxLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    fontSize: 12,
+    color: '#555',
+    cursor: 'pointer',
+  },
+};
+
+export default ToolsPanel;

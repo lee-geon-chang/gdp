@@ -1,0 +1,47 @@
+{
+  "process_worker_assignments": {
+    "P001": [
+      {
+        "worker_id": "W001",
+        "skill_level": "Senior"
+      }
+    ],
+    "P002": [
+      {
+        "worker_id": "W002",
+        "skill_level": "Mid"
+      },
+      {
+        "worker_id": "W003",
+        "skill_level": "Mid"
+      }
+    ],
+    "P003": [
+      {
+        "worker_id": "W004",
+        "skill_level": "Senior"
+      }
+    ],
+    "P004": [
+      {
+        "worker_id": "W005",
+        "skill_level": "Junior"
+      }
+    ],
+    "P005": [
+      {
+        "worker_id": "W006",
+        "skill_level": "Senior"
+      }
+    ]
+  },
+  "skill_adequacy_scores": {
+    "P001": 135.0,
+    "P002": 380.0,
+    "P003": 360.0,
+    "P004": 60.0,
+    "P005": 225.0
+  },
+  "mismatch_warnings": [],
+  "reassignment_suggestions": []
+}

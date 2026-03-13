@@ -1,0 +1,44 @@
+{
+  "experiment": "Ex1 v2 Zero-shot BOP Generation",
+  "dataset_version": "2.0",
+  "timestamp": "2026-02-11T16:44:55.858077",
+  "config": {
+    "temperature": 0.0,
+    "similarity_threshold": 0.4,
+    "prompt_source": "app/prompts.py SYSTEM_PROMPT"
+  },
+  "model_averages": {
+    "Gemini 2.5 Flash": {
+      "avg_accuracy": 0.8141,
+      "avg_sequence_match": 0.6539,
+      "avg_generated_count": 8.7,
+      "avg_latency_sec": 31.79,
+      "success_rate": 1.0,
+      "products_tested": 10
+    },
+    "GPT-5 Mini": {
+      "avg_accuracy": 0.8246,
+      "avg_sequence_match": 0.7434,
+      "avg_generated_count": 10.4,
+      "avg_latency_sec": 120.89,
+      "success_rate": 1.0,
+      "products_tested": 10
+    },
+    "Gemini 2.5 Pro": {
+      "avg_accuracy": 0.7909,
+      "avg_sequence_match": 0.8161,
+      "avg_generated_count": 9.2,
+      "avg_latency_sec": 53.37,
+      "success_rate": 1.0,
+      "products_tested": 10
+    },
+    "GPT-5.2": {
+      "avg_accuracy": 0.5371,
+      "avg_sequence_match": 0.8526,
+      "avg_generated_count": 12.0,
+      "avg_latency_sec": 69.86,
+      "success_rate": 1.0,
+      "products_tested": 10
+    }
+  }
+}

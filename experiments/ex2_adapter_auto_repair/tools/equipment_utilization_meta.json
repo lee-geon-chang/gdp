@@ -1,0 +1,127 @@
+{
+  "tool_id": "equipment_utilization",
+  "tool_name": "Equipment Utilization Analyzer",
+  "description": "Calculates equipment utilization rates by cross-referencing equipment definitions, process assignments, and cycle times against the takt time. Identifies underutilized, overloaded, and unassigned equipment.",
+  "execution_type": "python",
+  "file_name": "equipment_utilization.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "equipments",
+        "type": "array",
+        "required": true,
+        "description": "Array of equipment definitions",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "equipment_id", "type": "string", "description": "Unique equipment identifier"},
+            {"name": "name", "type": "string", "description": "Equipment display name"},
+            {"name": "type", "type": "string", "description": "Equipment type (e.g., robot, welding_tool, conveyor)"}
+          ]
+        }
+      },
+      {
+        "name": "assignments",
+        "type": "array",
+        "required": true,
+        "description": "Array of resource assignments linking equipment to processes",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process ID this equipment is assigned to"},
+            {"name": "parallel_index", "type": "integer", "description": "Parallel station index"},
+            {"name": "resource_type", "type": "string", "description": "Type of resource (equipment, worker, etc.)"},
+            {"name": "resource_id", "type": "string", "description": "ID of the assigned resource (matches equipment_id)"},
+            {"name": "role", "type": "string", "description": "Role of the equipment (main, auxiliary, etc.)"}
+          ]
+        }
+      },
+      {
+        "name": "process_times",
+        "type": "array",
+        "required": true,
+        "description": "Array of process cycle times per station",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process identifier"},
+            {"name": "parallel_index", "type": "integer", "description": "Parallel station index"},
+            {"name": "cycle_time_sec", "type": "number", "description": "Cycle time in seconds"}
+          ]
+        }
+      },
+      {
+        "name": "target_uph",
+        "type": "number",
+        "required": true,
+        "description": "Target units per hour"
+      }
+    ],
+    "description": "Equipment definitions, process assignments, cycle times, and target UPH"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {"name": "takt_time_sec", "type": "number", "description": "Takt time in seconds"},
+      {"name": "target_uph", "type": "number", "description": "Target UPH from input"},
+      {"name": "equipment_utilization", "type": "array", "description": "Per-equipment utilization breakdown"},
+      {"name": "overall_utilization_pct", "type": "number", "description": "Average utilization across all equipment"},
+      {"name": "underutilized", "type": "array", "description": "Equipment with utilization below 50%"},
+      {"name": "overloaded", "type": "array", "description": "Equipment with utilization above 100%"},
+      {"name": "unassigned_equipment", "type": "array", "description": "Equipment not assigned to any process"},
+      {"name": "suggestions", "type": "array", "description": "Improvement suggestions"}
+    ],
+    "description": "Equipment utilization analysis results"
+  },
+  "params_schema": [],
+  "example_input": {
+    "equipments": [
+      {"equipment_id": "EQ001", "name": "Assembly Robot A1", "type": "robot"},
+      {"equipment_id": "EQ002", "name": "Welding Gun W1", "type": "welding_tool"},
+      {"equipment_id": "EQ003", "name": "Paint Sprayer S1", "type": "spray_gun"},
+      {"equipment_id": "EQ004", "name": "Vision Sensor V1", "type": "sensor"},
+      {"equipment_id": "EQ005", "name": "Spare Robot X1", "type": "robot"}
+    ],
+    "assignments": [
+      {"process_id": "P001", "parallel_index": 0, "resource_type": "equipment", "resource_id": "EQ001", "role": "main"},
+      {"process_id": "P002", "parallel_index": 0, "resource_type": "equipment", "resource_id": "EQ002", "role": "main"},
+      {"process_id": "P003", "parallel_index": 0, "resource_type": "equipment", "resource_id": "EQ003", "role": "main"},
+      {"process_id": "P004", "parallel_index": 0, "resource_type": "equipment", "resource_id": "EQ004", "role": "main"}
+    ],
+    "process_times": [
+      {"process_id": "P001", "parallel_index": 0, "cycle_time_sec": 50.0},
+      {"process_id": "P002", "parallel_index": 0, "cycle_time_sec": 68.0},
+      {"process_id": "P003", "parallel_index": 0, "cycle_time_sec": 42.0},
+      {"process_id": "P004", "parallel_index": 0, "cycle_time_sec": 18.0}
+    ],
+    "target_uph": 55
+  },
+  "example_output": {
+    "takt_time_sec": 65.4545,
+    "target_uph": 55,
+    "equipment_utilization": [
+      {"equipment_id": "EQ002", "name": "Welding Gun W1", "type": "welding_tool", "assigned_process_id": "P002", "cycle_time_sec": 68.0, "utilization_pct": 103.89, "status": "overloaded"},
+      {"equipment_id": "EQ001", "name": "Assembly Robot A1", "type": "robot", "assigned_process_id": "P001", "cycle_time_sec": 50.0, "utilization_pct": 76.39, "status": "normal"},
+      {"equipment_id": "EQ003", "name": "Paint Sprayer S1", "type": "spray_gun", "assigned_process_id": "P003", "cycle_time_sec": 42.0, "utilization_pct": 64.17, "status": "normal"},
+      {"equipment_id": "EQ004", "name": "Vision Sensor V1", "type": "sensor", "assigned_process_id": "P004", "cycle_time_sec": 18.0, "utilization_pct": 27.5, "status": "underutilized"},
+      {"equipment_id": "EQ005", "name": "Spare Robot X1", "type": "robot", "assigned_process_id": null, "cycle_time_sec": 0.0, "utilization_pct": 0.0, "status": "unassigned"}
+    ],
+    "overall_utilization_pct": 54.39,
+    "underutilized": [
+      {"equipment_id": "EQ004", "name": "Vision Sensor V1", "utilization_pct": 27.5}
+    ],
+    "overloaded": [
+      {"equipment_id": "EQ002", "name": "Welding Gun W1", "utilization_pct": 103.89}
+    ],
+    "unassigned_equipment": [
+      {"equipment_id": "EQ005", "name": "Spare Robot X1", "type": "robot"}
+    ],
+    "suggestions": [
+      "Overloaded equipment detected: Welding Gun W1. Consider adding parallel equipment or redistributing work.",
+      "Underutilized equipment: Vision Sensor V1. Consider consolidating tasks or sharing equipment between processes.",
+      "Unassigned equipment: Spare Robot X1. These may be spare/backup or should be assigned to processes.",
+      "Overall utilization is low (54.39%). The line may have excess equipment capacity."
+    ]
+  }
+}

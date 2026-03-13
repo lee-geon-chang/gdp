@@ -1,0 +1,168 @@
+{
+  "tool_id": "material_flow_analyzer",
+  "tool_name": "Material Flow Analyzer",
+  "description": "Analyze material flow through the manufacturing line. For each material, finds which processes use it. For each process-to-successor edge, identifies materials that flow between them. Aggregates total quantities by material and by unit.",
+  "execution_type": "python",
+  "file_name": "material_flow_analyzer.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "processes",
+        "type": "array",
+        "required": true,
+        "description": "List of manufacturing processes with predecessor/successor relationships",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "required": true, "description": "Unique process identifier"},
+            {"name": "name", "type": "string", "required": true, "description": "Process display name"},
+            {"name": "predecessor_ids", "type": "array", "required": true, "description": "IDs of predecessor processes"},
+            {"name": "successor_ids", "type": "array", "required": true, "description": "IDs of successor processes"}
+          ]
+        }
+      },
+      {
+        "name": "material_assignments",
+        "type": "array",
+        "required": true,
+        "description": "Material assignments to processes",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "required": true, "description": "Process this material is assigned to"},
+            {"name": "material_id", "type": "string", "required": true, "description": "Unique material identifier"},
+            {"name": "material_name", "type": "string", "required": true, "description": "Material display name"},
+            {"name": "quantity", "type": "number", "required": true, "description": "Quantity of material used"},
+            {"name": "unit", "type": "string", "required": true, "description": "Unit of measurement (kg, pcs, L, etc.)"}
+          ]
+        }
+      }
+    ],
+    "description": "Processes with DAG relationships and material assignments per process"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "material_flows",
+        "type": "array",
+        "description": "Per-material flow summary showing which processes use each material and total quantity",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "material_id", "type": "string", "description": "Material identifier"},
+            {"name": "name", "type": "string", "description": "Material name"},
+            {"name": "unit", "type": "string", "description": "Unit of measurement"},
+            {"name": "used_in_processes", "type": "array", "description": "List of process IDs using this material"},
+            {"name": "total_quantity", "type": "number", "description": "Total quantity consumed across all processes"}
+          ]
+        }
+      },
+      {
+        "name": "flow_paths",
+        "type": "array",
+        "description": "Material flow along each process edge",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "from_process", "type": "string", "description": "Source process ID"},
+            {"name": "to_process", "type": "string", "description": "Target process ID"},
+            {"name": "materials_transferred", "type": "array", "description": "Material IDs flowing along this edge"}
+          ]
+        }
+      },
+      {
+        "name": "summary",
+        "type": "object",
+        "description": "Aggregated summary statistics",
+        "fields": [
+          {"name": "total_materials", "type": "integer", "description": "Number of distinct materials"},
+          {"name": "total_quantity_by_unit", "type": "object", "description": "Total quantities aggregated by unit"}
+        ]
+      }
+    ],
+    "description": "Material flow analysis results including per-material summaries, edge-level flows, and aggregated statistics"
+  },
+  "params_schema": [],
+  "example_input": {
+    "processes": [
+      {"process_id": "P1", "name": "Frame Assembly", "predecessor_ids": [], "successor_ids": ["P2"]},
+      {"process_id": "P2", "name": "Welding", "predecessor_ids": ["P1"], "successor_ids": ["P3"]},
+      {"process_id": "P3", "name": "Painting", "predecessor_ids": ["P2"], "successor_ids": ["P4"]},
+      {"process_id": "P4", "name": "Quality Check", "predecessor_ids": ["P3"], "successor_ids": []}
+    ],
+    "material_assignments": [
+      {"process_id": "P1", "material_id": "MAT001", "material_name": "Steel Frame", "quantity": 2.5, "unit": "kg"},
+      {"process_id": "P1", "material_id": "MAT002", "material_name": "Bolts M8", "quantity": 12.0, "unit": "pcs"},
+      {"process_id": "P2", "material_id": "MAT001", "material_name": "Steel Frame", "quantity": 0.3, "unit": "kg"},
+      {"process_id": "P2", "material_id": "MAT003", "material_name": "Welding Wire", "quantity": 0.5, "unit": "kg"},
+      {"process_id": "P3", "material_id": "MAT004", "material_name": "Paint Coating", "quantity": 1.2, "unit": "L"},
+      {"process_id": "P4", "material_id": "MAT005", "material_name": "QC Label", "quantity": 1.0, "unit": "pcs"}
+    ]
+  },
+  "example_output": {
+    "material_flows": [
+      {
+        "material_id": "MAT001",
+        "name": "Steel Frame",
+        "unit": "kg",
+        "used_in_processes": ["P1", "P2"],
+        "total_quantity": 2.8
+      },
+      {
+        "material_id": "MAT002",
+        "name": "Bolts M8",
+        "unit": "pcs",
+        "used_in_processes": ["P1"],
+        "total_quantity": 12.0
+      },
+      {
+        "material_id": "MAT003",
+        "name": "Welding Wire",
+        "unit": "kg",
+        "used_in_processes": ["P2"],
+        "total_quantity": 0.5
+      },
+      {
+        "material_id": "MAT004",
+        "name": "Paint Coating",
+        "unit": "L",
+        "used_in_processes": ["P3"],
+        "total_quantity": 1.2
+      },
+      {
+        "material_id": "MAT005",
+        "name": "QC Label",
+        "unit": "pcs",
+        "used_in_processes": ["P4"],
+        "total_quantity": 1.0
+      }
+    ],
+    "flow_paths": [
+      {
+        "from_process": "P1",
+        "to_process": "P2",
+        "materials_transferred": ["MAT001"]
+      },
+      {
+        "from_process": "P2",
+        "to_process": "P3",
+        "materials_transferred": []
+      },
+      {
+        "from_process": "P3",
+        "to_process": "P4",
+        "materials_transferred": []
+      }
+    ],
+    "summary": {
+      "total_materials": 5,
+      "total_quantity_by_unit": {
+        "kg": 3.3,
+        "pcs": 13.0,
+        "L": 1.2
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "tool_id": "bottleneck_analyzer",
+  "tool_name": "Bottleneck Analyzer",
+  "description": "Identifies the bottleneck process in a manufacturing line by calculating effective cycle times considering parallel stations, and determines whether the target UPH is achievable.",
+  "execution_type": "python",
+  "file_name": "bottleneck_analyzer.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "process_details",
+        "type": "array",
+        "required": true,
+        "description": "Array of process detail objects, each with process_id, parallel_index, cycle_time_sec, and name",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Unique identifier for the process"},
+            {"name": "parallel_index", "type": "integer", "description": "Index of parallel station (0-based)"},
+            {"name": "cycle_time_sec", "type": "number", "description": "Cycle time in seconds"},
+            {"name": "name", "type": "string", "description": "Display name of the process"}
+          ]
+        }
+      },
+      {
+        "name": "target_uph",
+        "type": "number",
+        "required": true,
+        "description": "Target units per hour"
+      }
+    ],
+    "description": "Process details with cycle times and parallel station info, plus the target UPH"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {"name": "bottleneck_process_id", "type": "string", "description": "Process ID of the bottleneck"},
+      {"name": "bottleneck_process_name", "type": "string", "description": "Name of the bottleneck process"},
+      {"name": "bottleneck_cycle_time_sec", "type": "number", "description": "Raw max cycle time of the bottleneck process"},
+      {"name": "effective_cycle_time_sec", "type": "number", "description": "Effective cycle time after considering parallel stations"},
+      {"name": "current_max_uph", "type": "number", "description": "Maximum achievable UPH based on bottleneck"},
+      {"name": "target_uph", "type": "number", "description": "Target UPH from input"},
+      {"name": "gap_uph", "type": "number", "description": "Difference between current max and target UPH (positive = surplus)"},
+      {"name": "is_target_achievable", "type": "boolean", "description": "Whether the target UPH can be met"},
+      {"name": "process_summary", "type": "array", "description": "Summary of all processes with effective cycle times"},
+      {"name": "suggestions", "type": "array", "description": "Improvement suggestions"}
+    ],
+    "description": "Bottleneck identification results with process summaries and suggestions"
+  },
+  "params_schema": [],
+  "example_input": {
+    "process_details": [
+      {"process_id": "P001", "parallel_index": 0, "cycle_time_sec": 45.0, "name": "Frame Assembly"},
+      {"process_id": "P001", "parallel_index": 1, "cycle_time_sec": 46.0, "name": "Frame Assembly"},
+      {"process_id": "P002", "parallel_index": 0, "cycle_time_sec": 72.0, "name": "Welding"},
+      {"process_id": "P003", "parallel_index": 0, "cycle_time_sec": 55.0, "name": "Painting"},
+      {"process_id": "P004", "parallel_index": 0, "cycle_time_sec": 30.0, "name": "Inspection"},
+      {"process_id": "P004", "parallel_index": 1, "cycle_time_sec": 32.0, "name": "Inspection"}
+    ],
+    "target_uph": 50
+  },
+  "example_output": {
+    "bottleneck_process_id": "P002",
+    "bottleneck_process_name": "Welding",
+    "bottleneck_cycle_time_sec": 72.0,
+    "effective_cycle_time_sec": 72.0,
+    "current_max_uph": 50.0,
+    "target_uph": 50,
+    "gap_uph": 0.0,
+    "is_target_achievable": true,
+    "process_summary": [
+      {"process_id": "P002", "name": "Welding", "parallel_count": 1, "max_cycle_time_sec": 72.0, "effective_cycle_time_sec": 72.0},
+      {"process_id": "P003", "name": "Painting", "parallel_count": 1, "max_cycle_time_sec": 55.0, "effective_cycle_time_sec": 55.0},
+      {"process_id": "P001", "name": "Frame Assembly", "parallel_count": 2, "max_cycle_time_sec": 46.0, "effective_cycle_time_sec": 23.0},
+      {"process_id": "P004", "name": "Inspection", "parallel_count": 2, "max_cycle_time_sec": 32.0, "effective_cycle_time_sec": 16.0}
+    ],
+    "suggestions": [
+      "Target UPH (50) is achievable. Current max UPH is 50.0."
+    ]
+  }
+}

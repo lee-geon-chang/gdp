@@ -1,0 +1,327 @@
+{
+  "project_title": "자전거 조립 라인",
+  "target_uph": 60,
+  "processes": [
+    {
+      "process_id": "P001",
+      "predecessor_ids": [],
+      "successor_ids": ["P002"]
+    },
+    {
+      "process_id": "P002",
+      "predecessor_ids": ["P001"],
+      "successor_ids": ["P003"]
+    },
+    {
+      "process_id": "P003",
+      "predecessor_ids": ["P002"],
+      "successor_ids": ["P004"]
+    },
+    {
+      "process_id": "P004",
+      "predecessor_ids": ["P003"],
+      "successor_ids": ["P005"]
+    },
+    {
+      "process_id": "P005",
+      "predecessor_ids": ["P004"],
+      "successor_ids": []
+    }
+  ],
+  "process_details": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "name": "프레임 준비",
+      "description": "자전거 프레임 입고 검사 및 표면 처리",
+      "cycle_time_sec": 45,
+      "location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "name": "휠 조립 A",
+      "description": "앞바퀴 허브 및 스포크 조립",
+      "cycle_time_sec": 90,
+      "location": { "x": 5, "y": 0, "z": -2 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 2,
+      "name": "휠 조립 B",
+      "description": "뒷바퀴 허브 및 스포크 조립",
+      "cycle_time_sec": 95,
+      "location": { "x": 5, "y": 0, "z": 2 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "name": "구동계 조립",
+      "description": "체인, 페달, 기어 시스템 조립",
+      "cycle_time_sec": 120,
+      "location": { "x": 10, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "name": "핸들바/안장 조립",
+      "description": "핸들바, 스템, 안장 설치 및 높이 조절",
+      "cycle_time_sec": 60,
+      "location": { "x": 15, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "name": "최종 검사",
+      "description": "브레이크, 변속기, 주행 테스트 등 품질 검사",
+      "cycle_time_sec": 75,
+      "location": { "x": 20, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 2.0, "depth": 4.0 }
+    }
+  ],
+  "resource_assignments": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-INSPECT-01",
+      "quantity": 1,
+      "role": "프레임 검사 장비",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.5, "height": 1.8, "depth": 1.0 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "프레임 검사원",
+      "relative_location": { "x": 1.2, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-WHEEL-01",
+      "quantity": 1,
+      "role": "휠 조립 지그",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.2, "height": 1.5, "depth": 1.2 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "휠 조립공",
+      "relative_location": { "x": 1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-WHEEL",
+      "quantity": 1,
+      "role": "앞바퀴 부품",
+      "relative_location": { "x": -1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 0.8, "depth": 0.3 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 2,
+      "resource_type": "equipment",
+      "resource_id": "EQ-WHEEL-02",
+      "quantity": 1,
+      "role": "휠 조립 지그",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.2, "height": 1.5, "depth": 1.2 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 2,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "휠 조립공",
+      "relative_location": { "x": 1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 2,
+      "resource_type": "material",
+      "resource_id": "MAT-WHEEL",
+      "quantity": 1,
+      "role": "뒷바퀴 부품",
+      "relative_location": { "x": -1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 0.8, "depth": 0.3 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-DRIVE-01",
+      "quantity": 1,
+      "role": "구동계 조립 스테이션",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 1.8, "depth": 2.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W004",
+      "quantity": 1,
+      "role": "구동계 전문 조립공",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "MAT-CHAIN",
+      "quantity": 1,
+      "role": "체인 세트",
+      "relative_location": { "x": -1.0, "y": 0, "z": -1.0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 0.3, "depth": 0.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-HANDLE-01",
+      "quantity": 1,
+      "role": "핸들/안장 조립대",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.5, "height": 1.5, "depth": 1.5 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "조립공",
+      "relative_location": { "x": 1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-TEST-01",
+      "quantity": 1,
+      "role": "주행 테스트 스탠드",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2, "y": 1, "z": 2 },
+      "computed_size": { "width": 3.0, "height": 2.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "품질 검사원",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 1.8, "depth": 0.5 }
+    }
+  ],
+  "equipments": [
+    { "equipment_id": "EQ-INSPECT-01", "name": "프레임 검사기", "type": "machine" },
+    { "equipment_id": "EQ-WHEEL-01", "name": "휠 조립 지그 A", "type": "manual_station" },
+    { "equipment_id": "EQ-WHEEL-02", "name": "휠 조립 지그 B", "type": "manual_station" },
+    { "equipment_id": "EQ-DRIVE-01", "name": "구동계 조립 스테이션", "type": "manual_station" },
+    { "equipment_id": "EQ-HANDLE-01", "name": "핸들/안장 조립대", "type": "manual_station" },
+    { "equipment_id": "EQ-TEST-01", "name": "최종 테스트 스탠드", "type": "machine" }
+  ],
+  "workers": [
+    { "worker_id": "W001", "name": "김검사", "skill_level": "Senior" },
+    { "worker_id": "W002", "name": "이조립", "skill_level": "Mid" },
+    { "worker_id": "W003", "name": "박조립", "skill_level": "Mid" },
+    { "worker_id": "W004", "name": "최기술", "skill_level": "Senior" }
+  ],
+  "materials": [
+    { "material_id": "MAT-WHEEL", "name": "휠 조립품", "unit": "ea" },
+    { "material_id": "MAT-CHAIN", "name": "체인 세트", "unit": "ea" }
+  ],
+  "obstacles": [
+    {
+      "obstacle_id": "OBS001",
+      "name": "안전 펜스 북측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": -5 },
+      "size": { "width": 26, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS002",
+      "name": "안전 펜스 남측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": 5 },
+      "size": { "width": 26, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS003",
+      "name": "구조 기둥 A",
+      "type": "pillar",
+      "position": { "x": 7.5, "y": 0, "z": -4 },
+      "size": { "width": 0.5, "height": 3.0, "depth": 0.5 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS004",
+      "name": "구조 기둥 B",
+      "type": "pillar",
+      "position": { "x": 7.5, "y": 0, "z": 4 },
+      "size": { "width": 0.5, "height": 3.0, "depth": 0.5 },
+      "rotation_y": 0
+    }
+  ]
+}

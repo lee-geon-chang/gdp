@@ -1,0 +1,109 @@
+{
+  "project_title": "최소 공정 테스트",
+  "target_uph": 120,
+  "processes": [
+    {
+      "process_id": "P001",
+      "predecessor_ids": [],
+      "successor_ids": ["P002"]
+    },
+    {
+      "process_id": "P002",
+      "predecessor_ids": ["P001"],
+      "successor_ids": []
+    }
+  ],
+  "process_details": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "name": "가공",
+      "description": "원자재 CNC 가공",
+      "cycle_time_sec": 30,
+      "location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 2.0, "height": 2.0, "depth": 2.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "name": "검사",
+      "description": "치수 및 외관 품질 검사",
+      "cycle_time_sec": 30,
+      "location": { "x": 5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 2.0, "height": 2.0, "depth": 2.0 }
+    }
+  ],
+  "resource_assignments": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-CNC-01",
+      "quantity": 1,
+      "role": "CNC 가공기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.5, "height": 2.0, "depth": 1.5 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "CNC 운전원",
+      "relative_location": { "x": 1.2, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-INSP-01",
+      "quantity": 1,
+      "role": "검사 장비",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.2, "height": 1.5, "depth": 1.2 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "검사원",
+      "relative_location": { "x": 1.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    }
+  ],
+  "equipments": [
+    { "equipment_id": "EQ-CNC-01", "name": "CNC 선반", "type": "machine" },
+    { "equipment_id": "EQ-INSP-01", "name": "3차원 측정기", "type": "machine" }
+  ],
+  "workers": [
+    { "worker_id": "W001", "name": "김기술", "skill_level": "Mid" },
+    { "worker_id": "W002", "name": "이검사", "skill_level": "Senior" }
+  ],
+  "materials": [
+    { "material_id": "M-RAW", "name": "알루미늄 원자재", "unit": "kg" }
+  ],
+  "obstacles": [
+    {
+      "obstacle_id": "OBS001",
+      "name": "안전 펜스",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": -3 },
+      "size": { "width": 10, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    }
+  ]
+}

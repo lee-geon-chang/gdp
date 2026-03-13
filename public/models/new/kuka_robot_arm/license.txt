@@ -1,0 +1,11 @@
+Model Information:
+* title:	Kuka Robot Arm kr120 r2700 extra f
+* source:	https://sketchfab.com/3d-models/kuka-robot-arm-kr120-r2700-extra-f-335469d9c8124b91b21ae1c582287e06
+* author:	Odvokara (https://sketchfab.com/Odvokara)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Kuka Robot Arm kr120 r2700 extra f" (https://sketchfab.com/3d-models/kuka-robot-arm-kr120-r2700-extra-f-335469d9c8124b91b21ae1c582287e06) by Odvokara (https://sketchfab.com/Odvokara) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

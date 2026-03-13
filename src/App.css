@@ -1,0 +1,42 @@
+/* TODO: implement */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:focus,
+button:active,
+button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 클릭 후 focus 시 border가 검은색으로 변하는 것 방지 */
+button:focus:not(:focus-visible) {
+  outline: none !important;
+  border-color: inherit !important;
+}
+
+/* BOP Table hover effect */
+table tbody tr:hover {
+  background-color: #f5f5f5;
+}

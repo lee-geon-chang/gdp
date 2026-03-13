@@ -1,0 +1,104 @@
+{
+  "tool_id": "process_distance_analyzer",
+  "tool_name": "Process Distance Analyzer",
+  "description": "Analyzes Euclidean distances between sequential manufacturing processes based on their physical locations. Identifies long-distance pairs and provides layout optimization suggestions.",
+  "execution_type": "python",
+  "file_name": "process_distance_analyzer.py",
+  "input_schema": {
+    "type": "json",
+    "fields": [
+      {
+        "name": "processes",
+        "type": "array",
+        "required": true,
+        "description": "Array of process objects with predecessor/successor relationships",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Unique process identifier"},
+            {"name": "predecessor_ids", "type": "array", "description": "List of predecessor process IDs"},
+            {"name": "successor_ids", "type": "array", "description": "List of successor process IDs"}
+          ]
+        }
+      },
+      {
+        "name": "process_locations",
+        "type": "array",
+        "required": true,
+        "description": "Array of process location objects with 3D coordinates",
+        "items": {
+          "type": "object",
+          "fields": [
+            {"name": "process_id", "type": "string", "description": "Process identifier (matches processes array)"},
+            {"name": "x", "type": "number", "description": "X coordinate in meters"},
+            {"name": "y", "type": "number", "description": "Y coordinate in meters"},
+            {"name": "z", "type": "number", "description": "Z coordinate in meters (typically 0 for floor-level)"},
+            {"name": "name", "type": "string", "description": "Display name for the process location"}
+          ]
+        }
+      }
+    ],
+    "description": "Process sequence relationships and their physical locations in 3D space"
+  },
+  "output_schema": {
+    "type": "json",
+    "fields": [
+      {"name": "distances", "type": "array", "description": "Array of distance measurements between sequential processes, sorted by distance descending"},
+      {"name": "total_flow_distance_m", "type": "number", "description": "Sum of all sequential distances in meters"},
+      {"name": "avg_distance_m", "type": "number", "description": "Average distance between sequential processes"},
+      {"name": "max_distance_pair", "type": "object", "description": "Process pair with the maximum distance"},
+      {"name": "min_distance_pair", "type": "object", "description": "Process pair with the minimum distance"},
+      {"name": "distance_std_dev_m", "type": "number", "description": "Standard deviation of distances"},
+      {"name": "num_pairs", "type": "integer", "description": "Number of sequential process pairs analyzed"},
+      {"name": "suggestions", "type": "array", "description": "Layout optimization suggestions"}
+    ],
+    "description": "Distance analysis results with pair details and optimization suggestions"
+  },
+  "params_schema": [],
+  "example_input": {
+    "processes": [
+      {"process_id": "P001", "predecessor_ids": [], "successor_ids": ["P002"]},
+      {"process_id": "P002", "predecessor_ids": ["P001"], "successor_ids": ["P003"]},
+      {"process_id": "P003", "predecessor_ids": ["P002"], "successor_ids": ["P004"]},
+      {"process_id": "P004", "predecessor_ids": ["P003"], "successor_ids": ["P005"]},
+      {"process_id": "P005", "predecessor_ids": ["P004"], "successor_ids": []}
+    ],
+    "process_locations": [
+      {"process_id": "P001", "x": 0.0, "y": 0.0, "z": 0.0, "name": "Frame Assembly"},
+      {"process_id": "P002", "x": 5.0, "y": 2.0, "z": 0.0, "name": "Welding Station"},
+      {"process_id": "P003", "x": 18.0, "y": 3.0, "z": 0.0, "name": "Paint Booth"},
+      {"process_id": "P004", "x": 22.0, "y": 1.0, "z": 0.0, "name": "Quality Check"},
+      {"process_id": "P005", "x": 25.0, "y": 0.0, "z": 0.0, "name": "Packaging"}
+    ]
+  },
+  "example_output": {
+    "distances": [
+      {"from_id": "P002", "to_id": "P003", "from_name": "Welding Station", "to_name": "Paint Booth", "distance_m": 13.0384, "dx": 13.0, "dy": 1.0, "dz": 0.0},
+      {"from_id": "P001", "to_id": "P002", "from_name": "Frame Assembly", "to_name": "Welding Station", "distance_m": 5.3852, "dx": 5.0, "dy": 2.0, "dz": 0.0},
+      {"from_id": "P003", "to_id": "P004", "from_name": "Paint Booth", "to_name": "Quality Check", "distance_m": 4.4721, "dx": 4.0, "dy": -2.0, "dz": 0.0},
+      {"from_id": "P004", "to_id": "P005", "from_name": "Quality Check", "to_name": "Packaging", "distance_m": 3.1623, "dx": 3.0, "dy": -1.0, "dz": 0.0}
+    ],
+    "total_flow_distance_m": 26.058,
+    "avg_distance_m": 6.5145,
+    "max_distance_pair": {
+      "from_id": "P002",
+      "to_id": "P003",
+      "from_name": "Welding Station",
+      "to_name": "Paint Booth",
+      "distance_m": 13.0384
+    },
+    "min_distance_pair": {
+      "from_id": "P004",
+      "to_id": "P005",
+      "from_name": "Quality Check",
+      "to_name": "Packaging",
+      "distance_m": 3.1623
+    },
+    "distance_std_dev_m": 4.4439,
+    "num_pairs": 4,
+    "suggestions": [
+      "Process pair 'Welding Station' -> 'Paint Booth' has the longest distance (13.0384m), which is significantly above average (6.51m). Consider relocating these stations closer together.",
+      "High variability in distances (std dev: 4.44m). Consider rearranging the layout for more uniform spacing."
+    ]
+  }
+}

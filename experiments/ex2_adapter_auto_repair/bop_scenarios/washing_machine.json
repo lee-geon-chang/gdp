@@ -1,0 +1,440 @@
+{
+  "project_title": "세탁기 조립 라인",
+  "target_uph": 45,
+  "processes": [
+    {
+      "process_id": "P001",
+      "predecessor_ids": [],
+      "successor_ids": ["P002"]
+    },
+    {
+      "process_id": "P002",
+      "predecessor_ids": ["P001"],
+      "successor_ids": ["P005"]
+    },
+    {
+      "process_id": "P003",
+      "predecessor_ids": [],
+      "successor_ids": ["P004"]
+    },
+    {
+      "process_id": "P004",
+      "predecessor_ids": ["P003"],
+      "successor_ids": ["P005"]
+    },
+    {
+      "process_id": "P005",
+      "predecessor_ids": ["P002", "P004"],
+      "successor_ids": ["P006"]
+    },
+    {
+      "process_id": "P006",
+      "predecessor_ids": ["P005"],
+      "successor_ids": ["P007"]
+    },
+    {
+      "process_id": "P007",
+      "predecessor_ids": ["P006"],
+      "successor_ids": ["P008"]
+    },
+    {
+      "process_id": "P008",
+      "predecessor_ids": ["P007"],
+      "successor_ids": []
+    }
+  ],
+  "process_details": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "name": "드럼 제작",
+      "description": "스테인리스 강판을 이용한 세탁 드럼 성형 및 가공",
+      "cycle_time_sec": 120,
+      "location": { "x": 0, "y": 0, "z": -3 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "name": "드럼 조립",
+      "description": "드럼에 베어링, 샤프트, 밸런서 조립",
+      "cycle_time_sec": 90,
+      "location": { "x": 6, "y": 0, "z": -3 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "name": "외함 제작",
+      "description": "강판 프레스 가공으로 외함 본체 제작",
+      "cycle_time_sec": 100,
+      "location": { "x": 0, "y": 0, "z": 3 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "name": "외함 도장",
+      "description": "외함 표면 처리 및 분체 도장",
+      "cycle_time_sec": 150,
+      "location": { "x": 6, "y": 0, "z": 3 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.5, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "name": "본체 조립",
+      "description": "드럼을 외함에 삽입하고 서스펜션, 모터 장착",
+      "cycle_time_sec": 180,
+      "location": { "x": 12, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 2.5, "depth": 3.5 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "name": "배선/배관",
+      "description": "전기 배선 및 급배수 배관 연결",
+      "cycle_time_sec": 110,
+      "location": { "x": 18, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "name": "기능 검사",
+      "description": "세탁, 탈수, 급배수 기능 종합 검사",
+      "cycle_time_sec": 160,
+      "location": { "x": 24, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.5, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "name": "포장",
+      "description": "스티로폼 완충재 적용 후 골판지 박스 포장",
+      "cycle_time_sec": 60,
+      "location": { "x": 30, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    }
+  ],
+  "resource_assignments": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PRESS-01",
+      "quantity": 1,
+      "role": "드럼 성형 프레스",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "프레스 운전원",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-STEEL",
+      "quantity": 5,
+      "role": "스테인리스 강판",
+      "relative_location": { "x": -1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.0, "height": 0.5, "depth": 1.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-ROBOT-01",
+      "quantity": 1,
+      "role": "드럼 조립 로봇",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1.2, "z": 1.2 },
+      "computed_size": { "width": 1.5, "height": 2.0, "depth": 1.5 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "조립 작업자",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-BEARING",
+      "quantity": 2,
+      "role": "베어링",
+      "relative_location": { "x": -1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 0.3, "depth": 0.5 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PRESS-02",
+      "quantity": 1,
+      "role": "외함 프레스",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "프레스 운전원",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PAINT-01",
+      "quantity": 1,
+      "role": "분체 도장기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.8, "y": 1.5, "z": 1.2 },
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W004",
+      "quantity": 1,
+      "role": "도장 기술자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-ROBOT-02",
+      "quantity": 1,
+      "role": "본체 조립 로봇",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "본체 조립 작업자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "서브 조립 작업자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-MOTOR",
+      "quantity": 1,
+      "role": "세탁 모터",
+      "relative_location": { "x": -2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 0.6, "depth": 0.8 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-WIRING-01",
+      "quantity": 1,
+      "role": "배선 작업대",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1, "z": 1.2 },
+      "computed_size": { "width": 2.0, "height": 1.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W005",
+      "quantity": 1,
+      "role": "배선 기술자",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-HOSE",
+      "quantity": 3,
+      "role": "급배수 호스",
+      "relative_location": { "x": -1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.5, "height": 0.3, "depth": 0.5 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-TEST-01",
+      "quantity": 1,
+      "role": "기능 검사 장비",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.2, "z": 1.5 },
+      "computed_size": { "width": 2.5, "height": 2.0, "depth": 2.5 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W006",
+      "quantity": 1,
+      "role": "품질 검사원",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PACK-01",
+      "quantity": 1,
+      "role": "자동 포장기",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.5, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "포장 작업자",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    }
+  ],
+  "equipments": [
+    { "equipment_id": "EQ-PRESS-01", "name": "드럼 성형 프레스", "type": "machine" },
+    { "equipment_id": "EQ-PRESS-02", "name": "외함 프레스", "type": "machine" },
+    { "equipment_id": "EQ-ROBOT-01", "name": "드럼 조립 로봇", "type": "robot" },
+    { "equipment_id": "EQ-ROBOT-02", "name": "본체 조립 로봇", "type": "robot" },
+    { "equipment_id": "EQ-PAINT-01", "name": "분체 도장기", "type": "machine" },
+    { "equipment_id": "EQ-WIRING-01", "name": "배선 작업대", "type": "manual_station" },
+    { "equipment_id": "EQ-TEST-01", "name": "기능 검사 장비", "type": "machine" },
+    { "equipment_id": "EQ-PACK-01", "name": "자동 포장기", "type": "machine" }
+  ],
+  "workers": [
+    { "worker_id": "W001", "name": "김성훈", "skill_level": "Senior" },
+    { "worker_id": "W002", "name": "이재민", "skill_level": "Mid" },
+    { "worker_id": "W003", "name": "박지호", "skill_level": "Mid" },
+    { "worker_id": "W004", "name": "최영수", "skill_level": "Senior" },
+    { "worker_id": "W005", "name": "정하늘", "skill_level": "Mid" },
+    { "worker_id": "W006", "name": "강민서", "skill_level": "Senior" }
+  ],
+  "materials": [
+    { "material_id": "M-STEEL", "name": "스테인리스 강판", "unit": "kg" },
+    { "material_id": "M-BEARING", "name": "드럼 베어링", "unit": "ea" },
+    { "material_id": "M-MOTOR", "name": "BLDC 세탁 모터", "unit": "ea" },
+    { "material_id": "M-HOSE", "name": "급배수 호스", "unit": "m" }
+  ],
+  "obstacles": [
+    {
+      "obstacle_id": "OBS001",
+      "name": "안전 펜스 북측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": -6 },
+      "size": { "width": 36, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS002",
+      "name": "안전 펜스 남측",
+      "type": "fence",
+      "position": { "x": -2, "y": 0, "z": 6 },
+      "size": { "width": 36, "height": 1.5, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS003",
+      "name": "구조 기둥 A",
+      "type": "pillar",
+      "position": { "x": 9, "y": 0, "z": -5 },
+      "size": { "width": 0.5, "height": 4.0, "depth": 0.5 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS004",
+      "name": "구조 기둥 B",
+      "type": "pillar",
+      "position": { "x": 9, "y": 0, "z": 5 },
+      "size": { "width": 0.5, "height": 4.0, "depth": 0.5 },
+      "rotation_y": 0
+    }
+  ]
+}

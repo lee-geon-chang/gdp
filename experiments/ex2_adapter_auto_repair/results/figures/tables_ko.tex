@@ -1,0 +1,158 @@
+% ============================================
+% 한글 논문용 테이블 (Korean version)
+% 요구 패키지: \usepackage{kotex}, \usepackage{booktabs}
+% ============================================
+
+
+% ============================================
+% 표 1: 수리 예산별 실행 통과율
+% ============================================
+\begin{table}[t]
+\centering
+\caption{최대 수리 예산 $k$에 따른 실행 통과율. 도구당 하나의 어댑터를 생성하며, 8개 BOP 시나리오에서 실행을 테스트한다 (10개 도구 $\times$ 8개 BOP = $k$당 80회 실행).}
+\label{tab:pass_at_k}
+\begin{tabular}{crrc}
+\toprule
+$k$ & 통과 & 실패 & 통과율 \\
+\midrule
+0 & 64 & 16 & 80.0\% \\
+1 & 79 & 1 & 98.8\% \\
+2 & 80 & 0 & \textbf{100.0\%} \\
+3 & 80 & 0 & \textbf{100.0\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% 표 2: 난이도별 실행 통과율
+% ============================================
+\begin{table}[t]
+\centering
+\caption{어댑터 난이도 수준 및 수리 예산 $k$에 따른 실행 통과율.}
+\label{tab:pass_by_difficulty}
+\begin{tabular}{lc c c c}
+\toprule
+난이도 & $k=0$ & $k=1$ & $k=2$ & $k=3$ \\
+\midrule
+Easy & 100\% & 100\% & 100\% & 100\% \\
+Medium & 32/40 (80.0\%) & 100\% & 100\% & 100\% \\
+Hard & 16/24 (66.7\%) & 23/24 (95.8\%) & 100\% & 100\% \\
+\midrule
+\textbf{전체} & \textbf{80\%} & \textbf{99\%} & \textbf{100\%} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% 표 3: 도구별 실행 결과
+% ============================================
+\begin{table}[t]
+\centering
+\caption{8개 BOP 시나리오에 대한 도구별 실행 통과율. 어댑터 생성 모델: \texttt{gemini-2.5-flash}.}
+\label{tab:per_tool}
+\begin{tabular}{llcccc}
+\toprule
+도구 & 난이도 & $k{=}0$ & $k{=}1$ & $k{=}2$ & $k{=}3$ \\
+\midrule
+\texttt{bottleneck\_analyzer} & E & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{line\_balance\_calculator} & E & 8/8 & 8/8 & 8/8 & 8/8 \\
+\cmidrule(lr){1-6}
+\texttt{equipment\_utilization} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{material\_flow\_analyzer} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{process\_distance\_analyzer} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{safety\_zone\_checker} & M & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{worker\_skill\_matcher} & M & 0/8 & 8/8 & 8/8 & 8/8 \\
+\cmidrule(lr){1-6}
+\texttt{energy\_estimator} & H & 8/8 & 8/8 & 8/8 & 8/8 \\
+\texttt{layout\_compactor} & H & 0/8 & 7/8 & 8/8 & 8/8 \\
+\texttt{takt\_time\_optimizer} & H & 8/8 & 8/8 & 8/8 & 8/8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% 표 4: 기준선 에러 분석
+% ============================================
+\begin{table}[t]
+\centering
+\caption{$k{=}0$ (기준선, 수리 없음)에서의 에러 분석.}
+\label{tab:errors}
+\begin{tabular}{llllc}
+\toprule
+에러 유형 & 발생 단계 & 영향 도구 & 원인 & 건수 \\
+\midrule
+\texttt{ImportError} & 전처리 & \texttt{layout\_compactor} & 금지 모듈 임포트 & 8 \\
+\texttt{TypeError} & 후처리 & \texttt{worker\_skill\_matcher} & 반환 타입 오류 & 8 \\
+\midrule
+\textbf{합계} & & & & \textbf{16/80} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% 표 5: 자동 수리 수렴 통계
+% ============================================
+\begin{table}[t]
+\centering
+\caption{자동 수리 수렴 통계.}
+\label{tab:repair}
+\begin{tabular}{lr}
+\toprule
+지표 & 값 \\
+\midrule
+기준선 실패 수 (k=0) & 16 \\
+수리 성공 건수 (k$\geq$1) & 47 \\
+평균 수리 시도 횟수 & 1.1 \\
+최대 수리 시도 횟수 & 2 \\
+수리 성공률 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% 표 6: 2단계 평가 — 실행 통과율 vs 출력 정확도
+% ============================================
+\begin{table}[t]
+\centering
+\caption{2단계 평가: 실행 통과율과 출력 정확도(속성 기반 검증) 비교. 출력 정확도는 실행을 통과한 실행에 대해서만 측정한다.}
+\label{tab:correctness}
+\begin{tabular}{crrcrrc}
+\toprule
+$k$ & \multicolumn{2}{c}{실행 통과} & & \multicolumn{2}{c}{출력 정확} & 완전 통과 \\
+\cmidrule(lr){2-3} \cmidrule(lr){5-6}
+ & 통과 & 통과율 & & 정확 & 정확률 & 통과율 \\
+\midrule
+0 & 64/80 & 80.0\% & & 63/64 & 98.4\% & 78.8\% \\
+1 & 79/80 & 98.8\% & & 67/79 & 84.8\% & 83.8\% \\
+2 & 80/80 & \textbf{100\%} & & 67/80 & 83.8\% & 83.8\% \\
+3 & 80/80 & \textbf{100\%} & & 67/80 & 83.8\% & 83.8\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================
+% 표 7: 도구별 출력 정확도
+% ============================================
+\begin{table}[t]
+\centering
+\caption{도구별 출력 정확도. 평균 점수는 검증 항목 통과 비율의 평균이다.}
+\label{tab:per_tool_correctness}
+\begin{tabular}{llrrl}
+\toprule
+도구 & 난이도 & 정확률 & 평균 점수 & 주요 에러 \\
+\midrule
+\texttt{bottleneck\_analyzer} & E & 100\% & 100.0\% & -- \\
+\texttt{line\_balance\_calculator} & E & 100\% & 100.0\% & -- \\
+\cmidrule(lr){1-5}
+\texttt{equipment\_utilization} & M & 100\% & 100.0\% & -- \\
+\texttt{material\_flow\_analyzer} & M & 100\% & 100.0\% & -- \\
+\texttt{process\_distance\_analyzer} & M & 100\% & 100.0\% & -- \\
+\texttt{safety\_zone\_checker} & M & 100\% & 100.0\% & -- \\
+\texttt{worker\_skill\_matcher} & M & \textbf{12\%} & 95.1\% & 분포 합계 불일치 \\
+\cmidrule(lr){1-5}
+\texttt{energy\_estimator} & H & 100\% & 100.0\% & -- \\
+\texttt{layout\_compactor} & H & \textbf{39\%} & 95.2\% & 음수 좌표 생성 \\
+\texttt{takt\_time\_optimizer} & H & \textbf{88\%} & 99.7\% & 병렬 수 감소 \\
+\bottomrule
+\end{tabular}
+\end{table}

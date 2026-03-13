@@ -1,0 +1,822 @@
+{
+  "project_title": "자동차 조립 라인",
+  "target_uph": 30,
+  "processes": [
+    {
+      "process_id": "P001",
+      "predecessor_ids": [],
+      "successor_ids": ["P002"]
+    },
+    {
+      "process_id": "P002",
+      "predecessor_ids": ["P001"],
+      "successor_ids": ["P003"]
+    },
+    {
+      "process_id": "P003",
+      "predecessor_ids": ["P002"],
+      "successor_ids": ["P004"]
+    },
+    {
+      "process_id": "P004",
+      "predecessor_ids": ["P003"],
+      "successor_ids": ["P005"]
+    },
+    {
+      "process_id": "P005",
+      "predecessor_ids": ["P004"],
+      "successor_ids": ["P006"]
+    },
+    {
+      "process_id": "P006",
+      "predecessor_ids": ["P005"],
+      "successor_ids": ["P007"]
+    },
+    {
+      "process_id": "P007",
+      "predecessor_ids": ["P006"],
+      "successor_ids": ["P008"]
+    },
+    {
+      "process_id": "P008",
+      "predecessor_ids": ["P007"],
+      "successor_ids": ["P009"]
+    },
+    {
+      "process_id": "P009",
+      "predecessor_ids": ["P008"],
+      "successor_ids": ["P010"]
+    },
+    {
+      "process_id": "P010",
+      "predecessor_ids": ["P009"],
+      "successor_ids": ["P011"]
+    },
+    {
+      "process_id": "P011",
+      "predecessor_ids": ["P010"],
+      "successor_ids": ["P012"]
+    },
+    {
+      "process_id": "P012",
+      "predecessor_ids": ["P011"],
+      "successor_ids": ["P013"]
+    },
+    {
+      "process_id": "P013",
+      "predecessor_ids": ["P012"],
+      "successor_ids": ["P014"]
+    },
+    {
+      "process_id": "P014",
+      "predecessor_ids": ["P013"],
+      "successor_ids": []
+    }
+  ],
+  "process_details": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "name": "차체 용접",
+      "description": "차체 패널 스폿 용접 및 레이저 용접",
+      "cycle_time_sec": 120,
+      "location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "name": "도장 전처리",
+      "description": "탈지, 인산염 피막 처리",
+      "cycle_time_sec": 90,
+      "location": { "x": 7, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "name": "전착 도장",
+      "description": "전착 도장 및 건조",
+      "cycle_time_sec": 150,
+      "location": { "x": 14, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.5, "depth": 4.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "name": "상도 도장",
+      "description": "컬러 도장, 클리어코트 및 건조",
+      "cycle_time_sec": 180,
+      "location": { "x": 21, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.5, "depth": 4.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "name": "도어 조립",
+      "description": "도어 힌지, 유리, 트림 조립",
+      "cycle_time_sec": 100,
+      "location": { "x": 28, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "name": "대시보드 설치",
+      "description": "계기판, 에어백, 공조 유닛 설치",
+      "cycle_time_sec": 110,
+      "location": { "x": 35, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "name": "배선 하네스",
+      "description": "차량 전장 배선 하네스 설치",
+      "cycle_time_sec": 130,
+      "location": { "x": 42, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "name": "엔진 장착",
+      "description": "엔진 및 트랜스미션 결합체 차체 장착",
+      "cycle_time_sec": 150,
+      "location": { "x": 49, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P009",
+      "parallel_index": 1,
+      "name": "변속기 장착",
+      "description": "변속기 연결 및 드라이브 샤프트 설치",
+      "cycle_time_sec": 100,
+      "location": { "x": 56, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P010",
+      "parallel_index": 1,
+      "name": "현가장치 조립",
+      "description": "프론트/리어 서스펜션, 스프링, 쇽업소버 조립",
+      "cycle_time_sec": 120,
+      "location": { "x": 63, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P011",
+      "parallel_index": 1,
+      "name": "배기관 설치",
+      "description": "배기 매니폴드, 촉매 컨버터, 머플러 설치",
+      "cycle_time_sec": 80,
+      "location": { "x": 70, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 1,
+      "name": "타이어 장착 A",
+      "description": "좌측 전후륜 타이어 장착 및 토크 체결",
+      "cycle_time_sec": 60,
+      "location": { "x": 77, "y": 0, "z": -3 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.5, "height": 3.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 2,
+      "name": "타이어 장착 B",
+      "description": "우측 전후륜 타이어 장착 및 토크 체결",
+      "cycle_time_sec": 60,
+      "location": { "x": 77, "y": 0, "z": 3 },
+      "rotation_y": 0,
+      "computed_size": { "width": 3.5, "height": 3.0, "depth": 3.0 }
+    },
+    {
+      "process_id": "P013",
+      "parallel_index": 1,
+      "name": "검사 라인",
+      "description": "휠 얼라인먼트, 브레이크, 등화 장치 검사",
+      "cycle_time_sec": 160,
+      "location": { "x": 84, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.0, "depth": 4.0 }
+    },
+    {
+      "process_id": "P014",
+      "parallel_index": 1,
+      "name": "출고 검사",
+      "description": "외관 검사, 수밀 검사, 시운전 테스트",
+      "cycle_time_sec": 120,
+      "location": { "x": 91, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "computed_size": { "width": 5.0, "height": 3.0, "depth": 4.0 }
+    }
+  ],
+  "resource_assignments": [
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-WELD-01",
+      "quantity": 1,
+      "role": "스폿 용접 로봇",
+      "relative_location": { "x": 0, "y": 0, "z": -1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-WELD-02",
+      "quantity": 1,
+      "role": "레이저 용접 로봇",
+      "relative_location": { "x": 0, "y": 0, "z": 1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P001",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "용접 감독",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PRETREAT-01",
+      "quantity": 1,
+      "role": "전처리 탱크",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2.0, "y": 1.5, "z": 2.0 },
+      "computed_size": { "width": 3.5, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P002",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W002",
+      "quantity": 1,
+      "role": "전처리 기술자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-ED-01",
+      "quantity": 1,
+      "role": "전착 도장 설비",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2.0, "y": 1.5, "z": 2.0 },
+      "computed_size": { "width": 4.0, "height": 3.0, "depth": 3.5 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "도장 기술자",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P003",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-EDPAINT",
+      "quantity": 15,
+      "role": "전착 도료",
+      "relative_location": { "x": -2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 1.0, "depth": 0.8 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PAINT-01",
+      "quantity": 1,
+      "role": "상도 도장 로봇",
+      "relative_location": { "x": 0, "y": 0, "z": -1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-PAINT-02",
+      "quantity": 1,
+      "role": "클리어코트 도장 로봇",
+      "relative_location": { "x": 0, "y": 0, "z": 1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W003",
+      "quantity": 1,
+      "role": "도장 감독",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P004",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-PAINT",
+      "quantity": 10,
+      "role": "컬러 도료",
+      "relative_location": { "x": -2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.8, "height": 1.0, "depth": 0.8 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-DOOR-01",
+      "quantity": 1,
+      "role": "도어 조립 지그",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.2, "z": 1.5 },
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W004",
+      "quantity": 1,
+      "role": "도어 조립공",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P005",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-GLASS",
+      "quantity": 4,
+      "role": "도어 유리",
+      "relative_location": { "x": -2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.0, "height": 0.8, "depth": 0.1 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-DASH-01",
+      "quantity": 1,
+      "role": "대시보드 설치 지그",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.2, "z": 1.5 },
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P006",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W005",
+      "quantity": 1,
+      "role": "내장 조립공",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-HARNESS-01",
+      "quantity": 1,
+      "role": "하네스 설치대",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1, "z": 1.2 },
+      "computed_size": { "width": 2.5, "height": 2.0, "depth": 2.5 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W006",
+      "quantity": 1,
+      "role": "전장 기술자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P007",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-HARNESS",
+      "quantity": 1,
+      "role": "배선 하네스 세트",
+      "relative_location": { "x": -2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.2, "height": 0.8, "depth": 0.8 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-ENGINE-01",
+      "quantity": 1,
+      "role": "엔진 탑재 크레인",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2.0, "y": 2.0, "z": 2.0 },
+      "computed_size": { "width": 3.5, "height": 4.0, "depth": 3.5 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W007",
+      "quantity": 1,
+      "role": "엔진 장착 기술자",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W001",
+      "quantity": 1,
+      "role": "엔진 장착 보조",
+      "relative_location": { "x": 2.5, "y": 0, "z": 1.5 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P008",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-ENGINE",
+      "quantity": 1,
+      "role": "엔진 어셈블리",
+      "relative_location": { "x": -2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 1.5, "height": 1.2, "depth": 1.2 }
+    },
+    {
+      "process_id": "P009",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-TRANS-01",
+      "quantity": 1,
+      "role": "변속기 장착 리프트",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.5, "z": 1.5 },
+      "computed_size": { "width": 2.5, "height": 3.0, "depth": 2.5 }
+    },
+    {
+      "process_id": "P009",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W007",
+      "quantity": 1,
+      "role": "파워트레인 기술자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P010",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-SUSP-01",
+      "quantity": 1,
+      "role": "현가장치 조립 스테이션",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.5, "y": 1.2, "z": 1.5 },
+      "computed_size": { "width": 3.0, "height": 2.5, "depth": 3.0 }
+    },
+    {
+      "process_id": "P010",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W008",
+      "quantity": 1,
+      "role": "섀시 기술자",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P010",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-SPRING",
+      "quantity": 4,
+      "role": "코일 스프링",
+      "relative_location": { "x": -2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.4, "height": 0.6, "depth": 0.4 }
+    },
+    {
+      "process_id": "P011",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-EXHAUST-01",
+      "quantity": 1,
+      "role": "배기관 설치 리프트",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1.2, "z": 1.2 },
+      "computed_size": { "width": 2.5, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P011",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W008",
+      "quantity": 1,
+      "role": "하체 조립공",
+      "relative_location": { "x": 2.0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-TIRE-01",
+      "quantity": 1,
+      "role": "타이어 장착기 A",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1.2, "z": 1.2 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W009",
+      "quantity": 1,
+      "role": "타이어 작업자 A",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 1,
+      "resource_type": "material",
+      "resource_id": "M-TIRE",
+      "quantity": 2,
+      "role": "좌측 타이어",
+      "relative_location": { "x": -1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.7, "height": 0.7, "depth": 0.3 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 2,
+      "resource_type": "equipment",
+      "resource_id": "EQ-TIRE-02",
+      "quantity": 1,
+      "role": "타이어 장착기 B",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1.2, "y": 1.2, "z": 1.2 },
+      "computed_size": { "width": 2.0, "height": 2.5, "depth": 2.0 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 2,
+      "resource_type": "worker",
+      "resource_id": "W010",
+      "quantity": 1,
+      "role": "타이어 작업자 B",
+      "relative_location": { "x": 1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P012",
+      "parallel_index": 2,
+      "resource_type": "material",
+      "resource_id": "M-TIRE",
+      "quantity": 2,
+      "role": "우측 타이어",
+      "relative_location": { "x": -1.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.7, "height": 0.7, "depth": 0.3 }
+    },
+    {
+      "process_id": "P013",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-ALIGN-01",
+      "quantity": 1,
+      "role": "휠 얼라인먼트 테스터",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2.0, "y": 1.5, "z": 2.0 },
+      "computed_size": { "width": 4.0, "height": 2.5, "depth": 3.5 }
+    },
+    {
+      "process_id": "P013",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W011",
+      "quantity": 1,
+      "role": "검사 기술자",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    },
+    {
+      "process_id": "P014",
+      "parallel_index": 1,
+      "resource_type": "equipment",
+      "resource_id": "EQ-FINAL-01",
+      "quantity": 1,
+      "role": "출고 검사 테스트 라인",
+      "relative_location": { "x": 0, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 2.0, "y": 1.5, "z": 2.0 },
+      "computed_size": { "width": 4.0, "height": 2.5, "depth": 3.5 }
+    },
+    {
+      "process_id": "P014",
+      "parallel_index": 1,
+      "resource_type": "worker",
+      "resource_id": "W012",
+      "quantity": 1,
+      "role": "출고 검사원",
+      "relative_location": { "x": 2.5, "y": 0, "z": 0 },
+      "rotation_y": 0,
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "computed_size": { "width": 0.6, "height": 1.8, "depth": 0.6 }
+    }
+  ],
+  "equipments": [
+    { "equipment_id": "EQ-WELD-01", "name": "스폿 용접 로봇", "type": "robot" },
+    { "equipment_id": "EQ-WELD-02", "name": "레이저 용접 로봇", "type": "robot" },
+    { "equipment_id": "EQ-PRETREAT-01", "name": "전처리 탱크", "type": "machine" },
+    { "equipment_id": "EQ-ED-01", "name": "전착 도장 설비", "type": "machine" },
+    { "equipment_id": "EQ-PAINT-01", "name": "상도 도장 로봇 A", "type": "robot" },
+    { "equipment_id": "EQ-PAINT-02", "name": "클리어코트 도장 로봇", "type": "robot" },
+    { "equipment_id": "EQ-DOOR-01", "name": "도어 조립 지그", "type": "manual_station" },
+    { "equipment_id": "EQ-DASH-01", "name": "대시보드 설치 지그", "type": "manual_station" },
+    { "equipment_id": "EQ-HARNESS-01", "name": "하네스 설치대", "type": "manual_station" },
+    { "equipment_id": "EQ-ENGINE-01", "name": "엔진 탑재 크레인", "type": "machine" },
+    { "equipment_id": "EQ-TRANS-01", "name": "변속기 장착 리프트", "type": "machine" },
+    { "equipment_id": "EQ-SUSP-01", "name": "현가장치 조립 스테이션", "type": "manual_station" },
+    { "equipment_id": "EQ-EXHAUST-01", "name": "배기관 설치 리프트", "type": "machine" },
+    { "equipment_id": "EQ-TIRE-01", "name": "타이어 장착기 A", "type": "machine" },
+    { "equipment_id": "EQ-TIRE-02", "name": "타이어 장착기 B", "type": "machine" },
+    { "equipment_id": "EQ-ALIGN-01", "name": "휠 얼라인먼트 테스터", "type": "machine" },
+    { "equipment_id": "EQ-FINAL-01", "name": "출고 검사 테스트 라인", "type": "machine" }
+  ],
+  "workers": [
+    { "worker_id": "W001", "name": "김대한", "skill_level": "Senior" },
+    { "worker_id": "W002", "name": "이준호", "skill_level": "Mid" },
+    { "worker_id": "W003", "name": "박성민", "skill_level": "Senior" },
+    { "worker_id": "W004", "name": "최진우", "skill_level": "Mid" },
+    { "worker_id": "W005", "name": "정태영", "skill_level": "Mid" },
+    { "worker_id": "W006", "name": "강우진", "skill_level": "Senior" },
+    { "worker_id": "W007", "name": "조현수", "skill_level": "Senior" },
+    { "worker_id": "W008", "name": "윤상혁", "skill_level": "Mid" },
+    { "worker_id": "W009", "name": "임동현", "skill_level": "Junior" },
+    { "worker_id": "W010", "name": "한승우", "skill_level": "Junior" },
+    { "worker_id": "W011", "name": "서민재", "skill_level": "Senior" },
+    { "worker_id": "W012", "name": "송지훈", "skill_level": "Senior" }
+  ],
+  "materials": [
+    { "material_id": "M-EDPAINT", "name": "전착 도료", "unit": "kg" },
+    { "material_id": "M-PAINT", "name": "컬러 도료", "unit": "kg" },
+    { "material_id": "M-GLASS", "name": "도어 유리", "unit": "ea" },
+    { "material_id": "M-HARNESS", "name": "배선 하네스 세트", "unit": "ea" },
+    { "material_id": "M-ENGINE", "name": "엔진 어셈블리", "unit": "ea" },
+    { "material_id": "M-SPRING", "name": "코일 스프링", "unit": "ea" },
+    { "material_id": "M-TIRE", "name": "타이어", "unit": "ea" }
+  ],
+  "obstacles": [
+    {
+      "obstacle_id": "OBS001",
+      "name": "안전 펜스 북측",
+      "type": "fence",
+      "position": { "x": -3, "y": 0, "z": -7 },
+      "size": { "width": 100, "height": 1.8, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS002",
+      "name": "안전 펜스 남측",
+      "type": "fence",
+      "position": { "x": -3, "y": 0, "z": 7 },
+      "size": { "width": 100, "height": 1.8, "depth": 0.1 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS003",
+      "name": "도장 부스 격벽",
+      "type": "wall",
+      "position": { "x": 10.5, "y": 0, "z": 0 },
+      "size": { "width": 0.3, "height": 4.0, "depth": 10.0 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS004",
+      "name": "구조 기둥 A",
+      "type": "pillar",
+      "position": { "x": 30, "y": 0, "z": -6 },
+      "size": { "width": 0.6, "height": 5.0, "depth": 0.6 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS005",
+      "name": "구조 기둥 B",
+      "type": "pillar",
+      "position": { "x": 60, "y": 0, "z": -6 },
+      "size": { "width": 0.6, "height": 5.0, "depth": 0.6 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS006",
+      "name": "구조 기둥 C",
+      "type": "pillar",
+      "position": { "x": 30, "y": 0, "z": 6 },
+      "size": { "width": 0.6, "height": 5.0, "depth": 0.6 },
+      "rotation_y": 0
+    },
+    {
+      "obstacle_id": "OBS007",
+      "name": "구조 기둥 D",
+      "type": "pillar",
+      "position": { "x": 60, "y": 0, "z": 6 },
+      "size": { "width": 0.6, "height": 5.0, "depth": 0.6 },
+      "rotation_y": 0
+    }
+  ]
+}
