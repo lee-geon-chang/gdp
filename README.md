@@ -26,8 +26,9 @@ An LLM-based framework for automated manufacturing process design and analysis t
 
 ### Installation
 
+Download the source from [https://anonymous.4open.science/r/gdp-0D5D](https://anonymous.4open.science/r/gdp-0D5D) and extract it, then:
+
 ```bash
-git clone https://anonymous.4open.science/r/gdp-0D5D.git
 cd gdp
 pip install -r requirements.txt
 npm install
