@@ -1,6 +1,5 @@
 # GDP (Generative Digital-twin Prototyper)
 
-[English](README.md) | [한국어](README_KR.md)
 
 An LLM-based framework for automated manufacturing process design and analysis tool integration.
 
